@@ -28,7 +28,61 @@ class Startup extends FlxState
 	// var dummy:FlxSprite;
 	var loadingText:FlxText;
 
+	var songsCached:Bool;
+
+	public static final songs:Array<String> = [
+		"Tutorial", "Bopeebo", "Fresh", "Dadbattle", "Spookeez", "South", "Monster", "Pico", "Philly", "Blammed", "Satin-Panties", "High", "Milf", "Cocoa",
+		"Eggnog", "Winter-Horrorland", "Senpai", "Roses", "Thorns", "klaskiiLoop", "freakyMenu"
+	]; // Start of the non-gameplay songs.
+
+	// List of character graphics and some other stuff.
+	// Just in case it want to do something with it later.
+	var charactersCached:Bool;
+	var startCachingCharacters:Bool = false;
+	var charI:Int = 0;
+
+	public static final characters:Array<String> = [
+		"BOYFRIEND",
+		"bfCar",
+		"christmas/bfChristmas",
+		"weeb/bfPixel",
+		"weeb/bfPixelsDEAD",
+		"GF_assets",
+		"gfCar",
+		"christmas/gfChristmas",
+		"weeb/gfPixel",
+		"DADDY_DEAREST",
+		"spooky_kids_assets",
+		"Monster_Assets",
+		"Pico_FNF_assetss",
+		"Mom_Assets",
+		"momCar",
+		"christmas/mom_dad_christmas_assets",
+		"christmas/monsterChristmas",
+		"weeb/senpai",
+		"weeb/spirit",
+		"weeb/senpaiCrazy"
+	];
+
+	var graphicsCached:Bool;
+	var startCachingGraphics:Bool = false;
+	var gfxI:Int = 0;
+
+	public static final graphics:Array<String> = [
+		"logoBumpin", "logoBumpin2", "titleBG", "gfDanceTitle", "gfDanceTitle2", "titleEnter", "stageback", "stagefront", "stagecurtains", "halloween_bg",
+		"philly/sky", "philly/city", "philly/behindTrain", "philly/train", "philly/street", "philly/win0", "philly/win1", "philly/win2", "philly/win3",
+		"philly/win4", "limo/bgLimo", "limo/fastCarLol", "limo/limoDancer", "limo/limoDrive", "limo/limoSunset", "christmas/bgWalls", "christmas/upperBop",
+		"christmas/bgEscalator", "christmas/christmasTree", "christmas/bottomBop", "christmas/fgSnow", "christmas/santa", "christmas/evilBG",
+		"christmas/evilTree", "christmas/evilSnow", "weeb/weebSky", "weeb/weebSchool", "weeb/weebStreet", "weeb/weebTreesBack", "weeb/weebTrees",
+		"weeb/petals", "weeb/bgFreaks", "weeb/animatedEvilSchool"
+	];
+
+	var cacheStart:Bool = false;
+
 	public static var thing = false;
+
+	var gtfo:Bool = false;
+	var StringText:String = "FNF: VS POYO is a fanmade mod for the game Friday Night Funkin'"
 
 	override function create()
 	{
@@ -75,34 +129,41 @@ class Startup extends FlxState
 		splash.screenCenter();
 		add(splash);
 
-		loadingText = new FlxText(5, FlxG.height - 32, 0, "", 24);
+		loadingText = new FlxText(5, FlxG.height - 30, 0, StringText, 24);
 		loadingText.setFormat(Paths.font("vcr"), 24, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(loadingText);
+
+		#if web
+		FlxG.sound.play(Paths.sound("tick"), 0);
+		#end
 
 		new FlxTimer().start(1.1, function(tmr:FlxTimer)
 		{
 			FlxG.sound.play(Paths.sound("splashSound"));
-			loadingText.text = "FNF: VS POYO is a mod of the game Friday Night Funkin'.\nWe do not plan to harm the original game in any shape or form.";
+			new FlxTimer().start(5, function(tmr:FlxTimer)
+			{
+				gtfo = true;
+			});
 		});
+
 		super.create();
 	}
 
 	override function update(elapsed)
 	{
+		if (splash.animation.curAnim.finished && splash.animation.curAnim.name == "end")
+		{
+			FlxG.switchState(nextState);
+		}
+
 		if (splash.animation.curAnim.finished
+			&& gtfo
 			&& !(splash.animation.curAnim.name == "end"))
 		{
-			new FlxTimer().start(5, function(tmr:FlxTimer)
-			{
-				FlxG.sound.play(Paths.sound("loadComplete"));
-				splash.animation.play("end");
-				splash.updateHitbox();
-				splash.screenCenter();
-				new FlxTimer().start(2, function(tmr:FlxTimer)
-				{
-					FlxG.switchState(nextState);
-				});
-			});
+			FlxG.sound.play(Paths.sound("loadComplete"));
+			splash.animation.play("end");
+			splash.updateHitbox();
+			splash.screenCenter();
 		}
 
 		super.update(elapsed);

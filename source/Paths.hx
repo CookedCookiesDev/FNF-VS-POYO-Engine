@@ -3,13 +3,10 @@ package;
 import flixel.FlxG;
 import flixel.graphics.FlxGraphic;
 import flixel.graphics.frames.FlxAtlasFrames;
-import openfl.display.BitmapData;
-import openfl.display3D.textures.Texture;
+import flixel.util.FlxDestroyUtil;
 import openfl.media.Sound;
-import openfl.system.System;
-import openfl.utils.AssetType;
 import openfl.utils.Assets;
-import openfl.Lib;
+import openfl.system.System;
 
 class Paths
 {
@@ -137,7 +134,8 @@ class Paths
 
 	inline static public function image(key:String, ?location:String = "images"):Any
 	{
-		return returnGraphic(key, library, gpurender);
+		var path:String = file(key, location, extensions.get("image"));
+		return loadImage(path);
 	}
 
 	inline static public function sound(key:String, ?location:String = "sounds"):Sound
@@ -176,52 +174,34 @@ class Paths
 	inline static public function getPackerAtlas(key:String, ?location:String = "images"):FlxAtlasFrames
 		return FlxAtlasFrames.fromSpriteSheetPacker(image(key, location), text(key, location));
 
-	public static function returnGraphic(key:String, ?library:String, ?gpurender:Bool = false):FlxGraphic
+	public static function loadImage(path:String, ?addToCache:Bool = false):Any
 	{
-		var path:String = getPath('images/$key.png', IMAGE, library);
 		if (Assets.exists(path, IMAGE))
 		{
-			if (!currentTrackedAssets.exists(path))
+			if (addToCache && !assetsCache["graphics"].exists(path))
 			{
-				var newGraphic:FlxGraphic = null;
-				var bitmap:BitmapData = Assets.getBitmapData(path);
+				var graphic:FlxGraphic = FlxGraphic.fromBitmapData(#if desktop GPUBitmap.create(path) #else Assets.getBitmapData(path) #end);
+				graphic.persist = true;
+				assetsCache["graphics"].set(path, graphic);
 
-				if (gpurender)
-				{
-					switch (FlxG.save.data.render)
-					{
-						case 1:
-							var texture = FlxG.stage.context3D.createTexture(bitmap.width, bitmap.height, BGRA, true);
-							texture.uploadFromBitmapData(bitmap);
-							currentTrackedTextures.set(path, texture);
-							bitmap.dispose();
-							bitmap.disposeImage();
-							bitmap = null;
-							newGraphic = FlxGraphic.fromBitmapData(BitmapData.fromTexture(texture), false, path);
-						case 2:
-							var texture = Lib.current.stage.context3D.createTexture(bitmap.width, bitmap.height, BGRA, true);
-							texture.uploadFromBitmapData(bitmap);
-							currentTrackedTextures.set(path, texture);
-							bitmap.dispose();
-							bitmap.disposeImage();
-							bitmap = null;
-							newGraphic = FlxGraphic.fromBitmapData(BitmapData.fromTexture(texture), false, path);
-						default:
-							newGraphic = FlxGraphic.fromBitmapData(bitmap, false, path);
-					}
-				}
-				else
-					newGraphic = FlxGraphic.fromBitmapData(bitmap, false, path);
-
-				newGraphic.persist = true;
-				currentTrackedAssets.set(path, newGraphic);
+				return assetsCache["graphics"].get(path);
 			}
+			else if (assetsCache["graphics"].exists(path))
+			{
+				trace('$path is already loaded to the cache!');
+				return assetsCache["graphics"].get(path);
+			}
+			else
+			{
+				if (!trackedAssets["graphics"].contains(path))
+					trackedAssets["graphics"].push(path);
 
-			localTrackedAssets.push(path);
-			return currentTrackedAssets.get(path);
+				return path;
+			}
 		}
+		else
+			trace('$path is null!');
 
-		trace('oh no its returning null NOOOO');
 		return null;
 	}
 
