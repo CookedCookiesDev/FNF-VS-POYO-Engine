@@ -82,7 +82,7 @@ class Startup extends FlxState
 	public static var thing = false;
 
 	var gtfo:Bool = false;
-	var StringText:String = "FNF: VS POYO is a fanmade mod for the game Friday Night Funkin'"
+	var StringText:String = "FNF: VS POYO is a fanmade mod for the game Friday Night Funkin'";
 
 	override function create()
 	{
