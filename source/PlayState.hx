@@ -351,7 +351,7 @@ class PlayState extends MusicBeatState
 				dadBeats = [0, 1, 2, 3];
 		}
 
-		var camPos:FlxPoint = new FlxPoint(0, 0;
+		var camPos:FlxPoint = new FlxPoint(0, 0);
 
 		// REPOSITIONING PER STAGE
 
