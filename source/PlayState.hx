@@ -2652,7 +2652,7 @@ class PlayState extends MusicBeatState
 		}
 
 		/*if (dad.curCharacter == 'mom')
-			vocals.volume = 1; */
+			vocals.volume = 1;
 
 		if (SONG.song.toLowerCase() == 'tutorial')
 		{
