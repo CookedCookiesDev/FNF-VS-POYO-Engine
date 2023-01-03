@@ -1,6 +1,6 @@
 package;
 
-import config.*;
+import flixel.input.gamepad.FlxGamepad;
 import flixel.FlxG;
 import flixel.input.FlxInput;
 import flixel.input.actions.FlxAction;
@@ -11,10 +11,10 @@ import flixel.input.actions.FlxActionSet;
 import flixel.input.gamepad.FlxGamepadButton;
 import flixel.input.gamepad.FlxGamepadInputID;
 import flixel.input.keyboard.FlxKey;
-#if mobile
-import mobile.flixel.FlxButton;
-import mobile.flixel.FlxHitbox;
-import mobile.flixel.FlxVirtualPad;
+#if mobileC
+import mobile.Hitbox;
+import mobile.FlxVirtualPad;
+import flixel.ui.FlxButton;
 #end
 
 #if (haxe >= "4.0.0")
@@ -265,97 +265,110 @@ class Controls extends FlxActionSet
 
 		for (action in digitalActions)
 			byName[action.name] = action;
-
+			
 		if (scheme == null)
 			scheme = None;
 		setKeyboardScheme(scheme, false);
 	}
 	#end
+	#if mobileC
+	public var trackedinputs:Array<FlxActionInput> = [];
 
-	#if mobile
-	public var trackedInputs:Array<FlxActionInput> = [];
+	public function addbutton(action:FlxActionDigital, button:FlxButton, state:FlxInputState) {
+		var input = new FlxActionInputDigitalIFlxInput(button, state);
+		trackedinputs.push(input);
 
-	public function addButton(action:FlxActionDigital, button:FlxButton, state:FlxInputState)
-	{
-		var input:FlxActionInputDigitalIFlxInput = new FlxActionInputDigitalIFlxInput(button, state);
-		trackedInputs.push(input);
 		action.add(input);
+		//action.addInput(button, state);
 	}
 
-	public function setHitBox(Hitbox:FlxHitbox)
+	public function setHitBox(hitbox:Hitbox) 
 	{
-		inline forEachBound(Control.UP, (action, state) -> addButton(action, Hitbox.buttonUp, state));
-		inline forEachBound(Control.DOWN, (action, state) -> addButton(action, Hitbox.buttonDown, state));
-		inline forEachBound(Control.LEFT, (action, state) -> addButton(action, Hitbox.buttonLeft, state));
-		inline forEachBound(Control.RIGHT, (action, state) -> addButton(action, Hitbox.buttonRight, state));
+		inline forEachBound(Control.UP, (action, state) -> addbutton(action, hitbox.buttonUp, state));
+		inline forEachBound(Control.DOWN, (action, state) -> addbutton(action, hitbox.buttonDown, state));
+		inline forEachBound(Control.LEFT, (action, state) -> addbutton(action, hitbox.buttonLeft, state));
+		inline forEachBound(Control.RIGHT, (action, state) -> addbutton(action, hitbox.buttonRight, state));	
 	}
 
-	public function setVirtualPad(VirtualPad:FlxVirtualPad, DPad:FlxDPadMode, Action:FlxActionMode)
-	{
+
+	public function removeFlxInput(Tinputs) {
+		for (action in this.digitalActions)
+		{
+			var i = action.inputs.length;
+
+			while (i-- > 0)
+			{
+				var input = action.inputs[i];
+				/*if (input.device == IFLXINPUT_OBJECT)
+					action.remove(input);*/
+
+				var x = Tinputs.length;
+				while (x-- > 0)
+					if (Tinputs[x] == input)
+						action.remove(input);
+			}
+		}
+	}
+
+
+
+	/*#if android
+	public function addAndroidBack() {
+		// fix this later
+
+		var BACK = #if (openfl >= "8.0.0") 0x4000010E #else 27 #end;
+		_back.addKey(BACK, JUST_RELEASED);
+		_back.addKey(BACK, JUST_PRESSED);
+		_back.addKey(BACK, PRESSED);
+	}
+	#end*/
+
+
+	public function setVirtualPad(virtualPad:FlxVirtualPad, ?DPad:FlxDPadMode, ?Action:FlxActionMode) {
+		if (DPad == null)
+			DPad = NONE;
+		if (Action == null)
+			Action = NONE;
+
 		switch (DPad)
 		{
 			case UP_DOWN:
-				inline forEachBound(Control.UP, (action, state) -> addButton(action, VirtualPad.buttonUp, state));
-				inline forEachBound(Control.DOWN, (action, state) -> addButton(action, VirtualPad.buttonDown, state));
+				inline forEachBound(Control.UP, (action, state) -> addbutton(action, virtualPad.buttonUp, state));
+				inline forEachBound(Control.DOWN, (action, state) -> addbutton(action, virtualPad.buttonDown, state));
 			case LEFT_RIGHT:
-				inline forEachBound(Control.LEFT, (action, state) -> addButton(action, VirtualPad.buttonLeft, state));
-				inline forEachBound(Control.RIGHT, (action, state) -> addButton(action, VirtualPad.buttonRight, state));
+				inline forEachBound(Control.LEFT, (action, state) -> addbutton(action, virtualPad.buttonLeft, state));
+				inline forEachBound(Control.RIGHT, (action, state) -> addbutton(action, virtualPad.buttonRight, state));
 			case UP_LEFT_RIGHT:
-				inline forEachBound(Control.UP, (action, state) -> addButton(action, VirtualPad.buttonUp, state));
-				inline forEachBound(Control.LEFT, (action, state) -> addButton(action, VirtualPad.buttonLeft, state));
-				inline forEachBound(Control.RIGHT, (action, state) -> addButton(action, VirtualPad.buttonRight, state));
-			case LEFT_FULL | RIGHT_FULL:
-				inline forEachBound(Control.UP, (action, state) -> addButton(action, VirtualPad.buttonUp, state));
-				inline forEachBound(Control.DOWN, (action, state) -> addButton(action, VirtualPad.buttonDown, state));
-				inline forEachBound(Control.LEFT, (action, state) -> addButton(action, VirtualPad.buttonLeft, state));
-				inline forEachBound(Control.RIGHT, (action, state) -> addButton(action, VirtualPad.buttonRight, state));
-			case BOTH_FULL:
-				inline forEachBound(Control.UP, (action, state) -> addButton(action, VirtualPad.buttonUp, state));
-				inline forEachBound(Control.DOWN, (action, state) -> addButton(action, VirtualPad.buttonDown, state));
-				inline forEachBound(Control.LEFT, (action, state) -> addButton(action, VirtualPad.buttonLeft, state));
-				inline forEachBound(Control.RIGHT, (action, state) -> addButton(action, VirtualPad.buttonRight, state));
-				inline forEachBound(Control.UP, (action, state) -> addButton(action, VirtualPad.buttonUp2, state));
-				inline forEachBound(Control.DOWN, (action, state) -> addButton(action, VirtualPad.buttonDown2, state));
-				inline forEachBound(Control.LEFT, (action, state) -> addButton(action, VirtualPad.buttonLeft2, state));
-				inline forEachBound(Control.RIGHT, (action, state) -> addButton(action, VirtualPad.buttonRight2, state));
-			case NONE: // do nothing
+				inline forEachBound(Control.UP, (action, state) -> addbutton(action, virtualPad.buttonUp, state));
+				inline forEachBound(Control.LEFT, (action, state) -> addbutton(action, virtualPad.buttonLeft, state));
+				inline forEachBound(Control.RIGHT, (action, state) -> addbutton(action, virtualPad.buttonRight, state));
+			case FULL | RIGHT_FULL:
+				inline forEachBound(Control.UP, (action, state) -> addbutton(action, virtualPad.buttonUp, state));
+				inline forEachBound(Control.DOWN, (action, state) -> addbutton(action, virtualPad.buttonDown, state));
+				inline forEachBound(Control.LEFT, (action, state) -> addbutton(action, virtualPad.buttonLeft, state));
+				inline forEachBound(Control.RIGHT, (action, state) -> addbutton(action, virtualPad.buttonRight, state));
+			case NONE:
 		}
 
 		switch (Action)
 		{
 			case A:
-				inline forEachBound(Control.ACCEPT, (action, state) -> addButton(action, VirtualPad.buttonA, state));
-			case B:
-				inline forEachBound(Control.BACK, (action, state) -> addButton(action, VirtualPad.buttonB, state));
-			case A_B | A_B_C | A_B_E | A_B_X_Y | A_B_C_X_Y | A_B_C_X_Y_Z | A_B_C_D_V_X_Y_Z:
-				inline forEachBound(Control.ACCEPT, (action, state) -> addButton(action, VirtualPad.buttonA, state));
-				inline forEachBound(Control.BACK, (action, state) -> addButton(action, VirtualPad.buttonB, state));
-			case NONE: // do nothing
-		}
-	}
-
-	public function removeVirtualControlsInput(Tinputs:Array<FlxActionInput>)
-	{
-		for (action in this.digitalActions)
-		{
-			var i = action.inputs.length;
-			while (i-- > 0)
-			{
-				var x = Tinputs.length;
-				while (x-- > 0)
-				{
-					if (Tinputs[x] == action.inputs[i])
-						action.remove(action.inputs[i]);
-				}
-			}
+				inline forEachBound(Control.ACCEPT, (action, state) -> addbutton(action, virtualPad.buttonA, state));
+			case A_B:
+				inline forEachBound(Control.ACCEPT, (action, state) -> addbutton(action, virtualPad.buttonA, state));
+				inline forEachBound(Control.BACK, (action, state) -> addbutton(action, virtualPad.buttonB, state));
+			case A_B_C:
+				inline forEachBound(Control.ACCEPT, (action, state) -> addbutton(action, virtualPad.buttonA, state));
+				inline forEachBound(Control.BACK, (action, state) -> addbutton(action, virtualPad.buttonB, state));
+			case A_B_X_Y:
+				inline forEachBound(Control.ACCEPT, (action, state) -> addbutton(action, virtualPad.buttonA, state));
+				inline forEachBound(Control.BACK, (action, state) -> addbutton(action, virtualPad.buttonB, state));
+			case NONE:
 		}
 	}
 	#end
-
 	override function update()
-	{
 		super.update();
-	}
 
 	// inline
 	public function checkByName(name:Action):Bool
@@ -483,7 +496,7 @@ class Controls extends FlxActionSet
 			for (input in action.inputs)
 			{
 				if (device == null || isDevice(input, device))
-					byName[name].add(cast input);
+				byName[name].add(cast input);
 			}
 		}
 		#end
@@ -499,7 +512,7 @@ class Controls extends FlxActionSet
 				#else
 				for (gamepad in controls.gamepadsAdded)
 					if (gamepadsAdded.indexOf(gamepad) == -1)
-						gamepadsAdded.push(gamepad);
+					  gamepadsAdded.push(gamepad);
 				#end
 
 				mergeKeyboardScheme(controls.keyboardScheme);
@@ -575,94 +588,111 @@ class Controls extends FlxActionSet
 
 	public function setKeyboardScheme(scheme:KeyboardScheme, reset = true)
 	{
+
 		loadKeyBinds();
 		/*if (reset)
-				removeKeyboard();
+			removeKeyboard();
 
-			keyboardScheme = scheme;
-
-			#if (haxe >= "4.0.0")
-			switch (scheme)
-			{
-				case Solo:
-					inline bindKeys(Control.UP, [FlxKey.fromString("W"), FlxKey.UP]);
-					inline bindKeys(Control.DOWN, [FlxKey.fromString("S"), FlxKey.DOWN]);
-					inline bindKeys(Control.LEFT, [FlxKey.fromString("A"), FlxKey.LEFT]);
-					inline bindKeys(Control.RIGHT, [FlxKey.fromString("D"), FlxKey.RIGHT]);
-					inline bindKeys(Control.ACCEPT, [Z, SPACE, ENTER]);
-					inline bindKeys(Control.BACK, [BACKSPACE, ESCAPE]);
-					inline bindKeys(Control.PAUSE, [P, ENTER, ESCAPE]);
-					inline bindKeys(Control.RESET, [FlxKey.fromString("R")]);
-				case Duo(true):
-					inline bindKeys(Control.UP, [W, K]);
-					inline bindKeys(Control.DOWN, [S, J]);
-					inline bindKeys(Control.LEFT, [A, H]);
-					inline bindKeys(Control.RIGHT, [D, L]);
-					inline bindKeys(Control.ACCEPT, [Z]);
-					inline bindKeys(Control.BACK, [X]);
-					inline bindKeys(Control.PAUSE, [ONE]);
-					inline bindKeys(Control.RESET, [R]);
-				case Duo(false):
-					inline bindKeys(Control.UP, [FlxKey.UP]);
-					inline bindKeys(Control.DOWN, [FlxKey.DOWN]);
-					inline bindKeys(Control.LEFT, [FlxKey.LEFT]);
-					inline bindKeys(Control.RIGHT, [FlxKey.RIGHT]);
-					inline bindKeys(Control.ACCEPT, [O]);
-					inline bindKeys(Control.BACK, [P]);
-					inline bindKeys(Control.PAUSE, [ENTER]);
-					inline bindKeys(Control.RESET, [BACKSPACE]);
-				case None: // nothing
-				case Custom: // nothing
-			}
-			#else
-			switch (scheme)
-			{
-				case Solo:
-					bindKeys(Control.UP, [W, K, FlxKey.UP]);
-					bindKeys(Control.DOWN, [S, J, FlxKey.DOWN]);
-					bindKeys(Control.LEFT, [A, H, FlxKey.LEFT]);
-					bindKeys(Control.RIGHT, [D, L, FlxKey.RIGHT]);
-					bindKeys(Control.ACCEPT, [Z, SPACE, ENTER]);
-					bindKeys(Control.BACK, [BACKSPACE, ESCAPE]);
-					bindKeys(Control.PAUSE, [P, ENTER, ESCAPE]);
-					bindKeys(Control.RESET, [R]);
-				case Duo(true):
-					bindKeys(Control.UP, [W, K]);
-					bindKeys(Control.DOWN, [S, J]);
-					bindKeys(Control.LEFT, [A, H]);
-					bindKeys(Control.RIGHT, [D, L]);
-					bindKeys(Control.ACCEPT, [Z]);
-					bindKeys(Control.BACK, [X]);
-					bindKeys(Control.PAUSE, [ONE]);
-					bindKeys(Control.RESET, [R]);
-				case Duo(false):
-					bindKeys(Control.UP, [FlxKey.UP]);
-					bindKeys(Control.DOWN, [FlxKey.DOWN]);
-					bindKeys(Control.LEFT, [FlxKey.LEFT]);
-					bindKeys(Control.RIGHT, [FlxKey.RIGHT]);
-					bindKeys(Control.ACCEPT, [O]);
-					bindKeys(Control.BACK, [P]);
-					bindKeys(Control.PAUSE, [ENTER]);
-					bindKeys(Control.RESET, [BACKSPACE]);
-				case None: // nothing
-				case Custom: // nothing
-			}
-			#end */
+		keyboardScheme = scheme;
+		
+		#if (haxe >= "4.0.0")
+		switch (scheme)
+		{
+			case Solo:
+				inline bindKeys(Control.UP, [FlxKey.fromString("W"), FlxKey.UP]);
+				inline bindKeys(Control.DOWN, [FlxKey.fromString("S"), FlxKey.DOWN]);
+				inline bindKeys(Control.LEFT, [FlxKey.fromString("A"), FlxKey.LEFT]);
+				inline bindKeys(Control.RIGHT, [FlxKey.fromString("D"), FlxKey.RIGHT]);
+				inline bindKeys(Control.ACCEPT, [Z, SPACE, ENTER]);
+				inline bindKeys(Control.BACK, [BACKSPACE, ESCAPE]);
+				inline bindKeys(Control.PAUSE, [P, ENTER, ESCAPE]);
+				inline bindKeys(Control.RESET, [FlxKey.fromString("R")]);
+			case Duo(true):
+				inline bindKeys(Control.UP, [W, K]);
+				inline bindKeys(Control.DOWN, [S, J]);
+				inline bindKeys(Control.LEFT, [A, H]);
+				inline bindKeys(Control.RIGHT, [D, L]);
+				inline bindKeys(Control.ACCEPT, [Z]);
+				inline bindKeys(Control.BACK, [X]);
+				inline bindKeys(Control.PAUSE, [ONE]);
+				inline bindKeys(Control.RESET, [R]);
+			case Duo(false):
+				inline bindKeys(Control.UP, [FlxKey.UP]);
+				inline bindKeys(Control.DOWN, [FlxKey.DOWN]);
+				inline bindKeys(Control.LEFT, [FlxKey.LEFT]);
+				inline bindKeys(Control.RIGHT, [FlxKey.RIGHT]);
+				inline bindKeys(Control.ACCEPT, [O]);
+				inline bindKeys(Control.BACK, [P]);
+				inline bindKeys(Control.PAUSE, [ENTER]);
+				inline bindKeys(Control.RESET, [BACKSPACE]);
+			case None: // nothing
+			case Custom: // nothing
+		}
+		#else
+		switch (scheme)
+		{
+			case Solo:
+				bindKeys(Control.UP, [W, K, FlxKey.UP]);
+				bindKeys(Control.DOWN, [S, J, FlxKey.DOWN]);
+				bindKeys(Control.LEFT, [A, H, FlxKey.LEFT]);
+				bindKeys(Control.RIGHT, [D, L, FlxKey.RIGHT]);
+				bindKeys(Control.ACCEPT, [Z, SPACE, ENTER]);
+				bindKeys(Control.BACK, [BACKSPACE, ESCAPE]);
+				bindKeys(Control.PAUSE, [P, ENTER, ESCAPE]);
+				bindKeys(Control.RESET, [R]);
+			case Duo(true):
+				bindKeys(Control.UP, [W, K]);
+				bindKeys(Control.DOWN, [S, J]);
+				bindKeys(Control.LEFT, [A, H]);
+				bindKeys(Control.RIGHT, [D, L]);
+				bindKeys(Control.ACCEPT, [Z]);
+				bindKeys(Control.BACK, [X]);
+				bindKeys(Control.PAUSE, [ONE]);
+				bindKeys(Control.RESET, [R]);
+			case Duo(false):
+				bindKeys(Control.UP, [FlxKey.UP]);
+				bindKeys(Control.DOWN, [FlxKey.DOWN]);
+				bindKeys(Control.LEFT, [FlxKey.LEFT]);
+				bindKeys(Control.RIGHT, [FlxKey.RIGHT]);
+				bindKeys(Control.ACCEPT, [O]);
+				bindKeys(Control.BACK, [P]);
+				bindKeys(Control.PAUSE, [ENTER]);
+				bindKeys(Control.RESET, [BACKSPACE]);
+			case None: // nothing
+			case Custom: // nothing
+		}
+		#end*/
 	}
 
 	public function loadKeyBinds()
 	{
-		// trace(FlxKey.fromString(FlxG.save.data.upBind));
+
+		//trace(FlxKey.fromString(FlxG.save.data.upBind));
 
 		removeKeyboard();
+		if (gamepadsAdded.length != 0)
+			removeGamepad();
+		KeyBinds.keyCheck();
+
+		var buttons = new Map<Control,Array<FlxGamepadInputID>>();
+
+		buttons.set(Control.UP,[FlxGamepadInputID.fromString(FlxG.save.data.gpupBind)]);
+		buttons.set(Control.LEFT,[FlxGamepadInputID.fromString(FlxG.save.data.gpleftBind)]);
+		buttons.set(Control.DOWN,[FlxGamepadInputID.fromString(FlxG.save.data.gpdownBind)]);
+		buttons.set(Control.RIGHT,[FlxGamepadInputID.fromString(FlxG.save.data.gprightBind)]);
+		buttons.set(Control.ACCEPT,[FlxGamepadInputID.A]);
+		buttons.set(Control.BACK,[FlxGamepadInputID.B]);
+		buttons.set(Control.PAUSE,[FlxGamepadInputID.START]);
+
+		addGamepad(0,buttons);
 
 		inline bindKeys(Control.UP, [FlxKey.fromString(FlxG.save.data.upBind), FlxKey.UP]);
 		inline bindKeys(Control.DOWN, [FlxKey.fromString(FlxG.save.data.downBind), FlxKey.DOWN]);
 		inline bindKeys(Control.LEFT, [FlxKey.fromString(FlxG.save.data.leftBind), FlxKey.LEFT]);
 		inline bindKeys(Control.RIGHT, [FlxKey.fromString(FlxG.save.data.rightBind), FlxKey.RIGHT]);
-		inline bindKeys(Control.ACCEPT, [SPACE, ENTER]);
+		inline bindKeys(Control.ACCEPT, [Z, SPACE, ENTER]);
 		inline bindKeys(Control.BACK, [BACKSPACE, ESCAPE]);
-		inline bindKeys(Control.PAUSE, [ENTER, ESCAPE]);
+		inline bindKeys(Control.PAUSE, [P, ENTER, ESCAPE]);
 		inline bindKeys(Control.RESET, [FlxKey.fromString(FlxG.save.data.killBind)]);
 	}
 
@@ -682,11 +712,14 @@ class Controls extends FlxActionSet
 
 	public function addGamepad(id:Int, ?buttonMap:Map<Control, Array<FlxGamepadInputID>>):Void
 	{
-		gamepadsAdded.push(id);
+		if (gamepadsAdded.contains(id))
+			gamepadsAdded.remove(id);
 
+		gamepadsAdded.push(id);
+		
 		#if (haxe >= "4.0.0")
 		for (control => buttons in buttonMap)
-		inline bindButtons(control, id, buttons);
+			inline bindButtons(control, id, buttons);
 		#else
 		for (control in buttonMap.keys())
 			bindButtons(control, id, buttonMap[control]);
@@ -699,7 +732,7 @@ class Controls extends FlxActionSet
 
 		#if (haxe >= "4.0.0")
 		for (control => buttons in buttonMap)
-		inline bindButtons(control, id, buttons);
+			inline bindButtons(control, id, buttons);
 		#else
 		for (control in buttonMap.keys())
 			bindButtons(control, id, buttonMap[control]);
@@ -724,13 +757,7 @@ class Controls extends FlxActionSet
 
 	public function addDefaultGamepad(id):Void
 	{
-		addGamepadLiteral(id, []);
-	}
-
-	public function setMenuControls(id):Void
-	{
-		removeGamepad(id);
-
+		#if !switch
 		addGamepadLiteral(id, [
 			Control.ACCEPT => [A],
 			Control.BACK => [B],
@@ -739,61 +766,23 @@ class Controls extends FlxActionSet
 			Control.LEFT => [DPAD_LEFT, LEFT_STICK_DIGITAL_LEFT],
 			Control.RIGHT => [DPAD_RIGHT, LEFT_STICK_DIGITAL_RIGHT],
 			Control.PAUSE => [START],
-			Control.RESET => [FlxGamepadInputID.BACK]
+			Control.RESET => [Y]
 		]);
-	}
-
-	/*
-		"LEFT: DPAD LEFT / X (SQUARE) / LEFT TRIGGER     DOWN: DPAD DOWN / X (CROSS) / LEFT BUMPER     UP: DPAD UP / Y (TRIANGLE) / RIGHT BUMPER     RIGHT: DPAD RIGHT / B (CIRCLE) / RIGHT TRIGGER", 
-		"LEFT: DPAD LEFT / DPAD DOWN     DOWN: DPAD UP / DPAD RIGHT     UP: X (SQUARE) / Y (TRIANGLE)     RIGHT: A (CROSS) / B (CIRCLE)", 
-		"LEFT: ALL DPAD DIRECTIONS     DOWN: LEFT BUMPER / LEFT TRIGGER     UP: RIGHT BUMPER / RIGHT TRIGGER     RIGHT: ALL FACE BUTTONS"
-	 */
-	public function setGameControls(id):Void
-	{
-		removeGamepad(id);
-
-		switch (Config.controllerScheme)
-		{
-			case 1:
-				addGamepadLiteral(id, [
-					Control.UP => [X, Y, RIGHT_SHOULDER],
-					Control.DOWN => [DPAD_UP, DPAD_RIGHT, LEFT_SHOULDER],
-					Control.LEFT => [DPAD_LEFT, DPAD_DOWN, LEFT_TRIGGER],
-					Control.RIGHT => [A, B, RIGHT_TRIGGER],
-					Control.PAUSE => [START],
-					Control.RESET => [FlxGamepadInputID.BACK]
-				]);
-
-			case 2:
-				addGamepadLiteral(id, [
-					Control.UP => [RIGHT_SHOULDER, RIGHT_TRIGGER],
-					Control.DOWN => [LEFT_SHOULDER, LEFT_TRIGGER],
-					Control.LEFT => [DPAD_LEFT, DPAD_UP, DPAD_RIGHT, DPAD_DOWN],
-					Control.RIGHT => [A, B, X, Y],
-					Control.PAUSE => [START],
-					Control.RESET => [FlxGamepadInputID.BACK]
-				]);
-
-			case 3:
-				addGamepadLiteral(id, [
-					Control.UP => [FlxGamepadInputID.fromString(FlxG.save.data.upBindController)],
-					Control.DOWN => [FlxGamepadInputID.fromString(FlxG.save.data.downBindController)],
-					Control.LEFT => [FlxGamepadInputID.fromString(FlxG.save.data.leftBindController)],
-					Control.RIGHT => [FlxGamepadInputID.fromString(FlxG.save.data.rightBindController)],
-					Control.PAUSE => [START],
-					Control.RESET => [FlxGamepadInputID.BACK]
-				]);
-
-			default:
-				addGamepadLiteral(id, [
-					Control.UP => [DPAD_UP, Y, RIGHT_SHOULDER],
-					Control.DOWN => [DPAD_DOWN, A, LEFT_SHOULDER],
-					Control.LEFT => [DPAD_LEFT, X, LEFT_TRIGGER],
-					Control.RIGHT => [DPAD_RIGHT, B, RIGHT_TRIGGER],
-					Control.PAUSE => [START],
-					Control.RESET => [FlxGamepadInputID.BACK]
-				]);
-		}
+		#else
+		addGamepadLiteral(id, [
+			//Swap A and B for switch
+			Control.ACCEPT => [B],
+			Control.BACK => [A],
+			Control.UP => [DPAD_UP, LEFT_STICK_DIGITAL_UP, RIGHT_STICK_DIGITAL_UP],
+			Control.DOWN => [DPAD_DOWN, LEFT_STICK_DIGITAL_DOWN, RIGHT_STICK_DIGITAL_DOWN],
+			Control.LEFT => [DPAD_LEFT, LEFT_STICK_DIGITAL_LEFT, RIGHT_STICK_DIGITAL_LEFT],
+			Control.RIGHT => [DPAD_RIGHT, LEFT_STICK_DIGITAL_RIGHT, RIGHT_STICK_DIGITAL_RIGHT],
+			Control.PAUSE => [START],
+			//Swap Y and X for switch
+			Control.RESET => [Y],
+			Control.CHEAT => [X]
+		]);
+		#end
 	}
 
 	/**

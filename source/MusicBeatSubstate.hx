@@ -1,12 +1,11 @@
 package;
 
+import Conductor.BPMChangeEvent;
 import flixel.FlxG;
 import flixel.FlxSubState;
-#if mobile
-import mobile.flixel.FlxVirtualPad;
-import flixel.FlxCamera;
+#if mobileC
+import mobile.FlxVirtualPad;
 import flixel.input.actions.FlxActionInput;
-import flixel.util.FlxDestroyUtil;
 #end
 
 class MusicBeatSubstate extends FlxSubState
@@ -19,9 +18,6 @@ class MusicBeatSubstate extends FlxSubState
 	private var lastBeat:Float = 0;
 	private var lastStep:Float = 0;
 
-	private var totalBeats:Int = 0;
-	private var totalSteps:Int = 0;
-
 	private var curStep:Int = 0;
 	private var curBeat:Int = 0;
 	private var controls(get, never):Controls;
@@ -29,106 +25,73 @@ class MusicBeatSubstate extends FlxSubState
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;
 
-	#if mobile
-	var virtualPad:FlxVirtualPad;
-	var trackedInputsVirtualPad:Array<FlxActionInput> = [];
+	#if mobileC
+	var _virtualpad:FlxVirtualPad;
 
-	public function addVirtualPad(DPad:FlxDPadMode, Action:FlxActionMode)
-	{
-		if (virtualPad != null)
-			removeVirtualPad();
+	var trackedinputs:Array<FlxActionInput> = [];
 
-		virtualPad = new FlxVirtualPad(DPad, Action);
-		add(virtualPad);
+	// adding virtualpad to state
+	public function addVirtualPad(?DPad:FlxDPadMode, ?Action:FlxActionMode) {
+		_virtualpad = new FlxVirtualPad(DPad, Action);
+		_virtualpad.alpha = 0.75;
+		add(_virtualpad);
+		controls.setVirtualPad(_virtualpad, DPad, Action);
+		trackedinputs = controls.trackedinputs;
+		controls.trackedinputs = [];
 
-		controls.setVirtualPad(virtualPad, DPad, Action);
-		trackedInputsVirtualPad = controls.trackedInputs;
-		controls.trackedInputs = [];
+		/*#if android
+		controls.addAndroidBack();
+		#end*/
 	}
 
-	public function removeVirtualPad()
-	{
-		if (trackedInputsVirtualPad.length > 0)
-			controls.removeVirtualControlsInput(trackedInputsVirtualPad);
-
-		if (virtualPad != null)
-			remove(virtualPad);
-	}
-
-	public function addVirtualPadCamera(DefaultDrawTarget:Bool = true)
-	{
-		if (virtualPad != null)
-		{
-			var camControls:FlxCamera = new FlxCamera();
-			FlxG.cameras.add(camControls, DefaultDrawTarget);
-			camControls.bgColor.alpha = 0;
-			virtualPad.cameras = [camControls];
-		}
-	}
-	#end
-
-	override function destroy()
-	{
-		#if mobile
-		if (trackedInputsVirtualPad.length > 0)
-			controls.removeVirtualControlsInput(trackedInputsVirtualPad);
-		#end
+	override function destroy() {
+		controls.removeFlxInput(trackedinputs);
 
 		super.destroy();
-
-		#if mobile
-		if (virtualPad != null)
-			virtualPad = FlxDestroyUtil.destroy(virtualPad);
-		#end
 	}
-
-	override function create()
-	{
-		super.create();
-	}
+	/*#else
+	public function addVirtualPad(?DPad, ?Action){};*/
+	#end
 
 	override function update(elapsed:Float)
 	{
-		everyStep();
+		//everyStep();
+		var oldStep:Int = curStep;
 
 		updateCurStep();
-		curBeat = Math.round(curStep / 4);
+		curBeat = Math.floor(curStep / 4);
+
+		if (oldStep != curStep && curStep > 0)
+			stepHit();
+
 
 		super.update(elapsed);
 	}
 
-	/**
-	 * CHECKS EVERY FRAME
-	 */
-	private function everyStep():Void
-	{
-		if (Conductor.songPosition > lastStep + Conductor.stepCrochet - Conductor.safeZoneOffset
-			|| Conductor.songPosition < lastStep + Conductor.safeZoneOffset)
-		{
-			if (Conductor.songPosition > lastStep + Conductor.stepCrochet)
-			{
-				stepHit();
-			}
-		}
-	}
-
 	private function updateCurStep():Void
 	{
-		curStep = Math.floor(Conductor.songPosition / Conductor.stepCrochet);
+		var lastChange:BPMChangeEvent = {
+			stepTime: 0,
+			songTime: 0,
+			bpm: 0
+		}
+		for (i in 0...Conductor.bpmChangeMap.length)
+		{
+			if (Conductor.songPosition > Conductor.bpmChangeMap[i].songTime)
+				lastChange = Conductor.bpmChangeMap[i];
+		}
+
+		curStep = lastChange.stepTime + Math.floor((Conductor.songPosition - lastChange.songTime) / Conductor.stepCrochet);
 	}
 
 	public function stepHit():Void
 	{
-		totalSteps += 1;
-		lastStep += Conductor.stepCrochet;
-
-		if (totalSteps % 4 == 0)
+		if (curStep % 4 == 0)
 			beatHit();
 	}
 
 	public function beatHit():Void
 	{
-		lastBeat += Conductor.crochet;
-		totalBeats += 1;
+		//do literally nothing dumbass
 	}
 }

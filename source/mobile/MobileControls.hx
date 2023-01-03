@@ -1,117 +1,89 @@
+#if mobileC
 package mobile;
 
 import flixel.FlxG;
 import flixel.group.FlxSpriteGroup;
-import flixel.math.FlxPoint;
-import flixel.util.FlxDestroyUtil;
-import mobile.flixel.FlxHitbox;
-import mobile.flixel.FlxVirtualPad;
 
-/**
- * @author Mihai Alexandru (M.A. Jigsaw)
- */
-class MobileControls extends FlxSpriteGroup
+import mobile.FlxVirtualPad;
+import mobile.Hitbox;
+
+import KadeEngineData;
+
+class Mobilecontrols extends FlxSpriteGroup
 {
-	public static var customVirtualPad(get, set):FlxVirtualPad;
-	public static var mode(get, set):String;
+	public var mode:ControlsGroup = HITBOX;
 
-	public var virtualPad:FlxVirtualPad;
-	public var hitbox:FlxHitbox;
+	public var _hitbox:Hitbox;
+	public var _virtualPad:FlxVirtualPad;
 
-	public function new()
+	var config:KadeEngineData;
+
+	public function new() 
 	{
 		super();
 
-		switch (MobileControls.mode)
+		config = new KadeEngineData();
+
+		// load control mode num from Config.hx
+		mode = getModeFromNumber(config.getcontrolmode());
+		trace(config.getcontrolmode());
+
+		switch (mode)
 		{
-			case 'Pad-Right':
-				virtualPad = new FlxVirtualPad(RIGHT_FULL, NONE);
-				add(virtualPad);
-			case 'Pad-Left':
-				virtualPad = new FlxVirtualPad(LEFT_FULL, NONE);
-				add(virtualPad);
-			case 'Pad-Custom':
-				virtualPad = MobileControls.customVirtualPad;
-				add(virtualPad);
-			case 'Pad-Duo':
-				virtualPad = new FlxVirtualPad(BOTH_FULL, NONE);
-				add(virtualPad);
-			case 'Hitbox':
-				hitbox = new FlxHitbox();
-				add(hitbox);
-			case 'Keyboard': // do nothing
+			case VIRTUALPAD_RIGHT:
+				initVirtualPad(0);
+			case VIRTUALPAD_LEFT:
+				initVirtualPad(1);
+			case VIRTUALPAD_CUSTOM:
+				initVirtualPad(2);
+			case HITBOX:
+				_hitbox = new Hitbox();
+				add(_hitbox);
+			case KEYBOARD:
 		}
 	}
 
-	override public function destroy():Void
+	function initVirtualPad(vpadMode:Int) 
 	{
-		super.destroy();
-
-		if (virtualPad != null)
-			virtualPad = FlxDestroyUtil.destroy(virtualPad);
-
-		if (hitbox != null)
-			hitbox = FlxDestroyUtil.destroy(hitbox);
-	}
-
-	private static function get_mode():String
-	{
-		if (FlxG.save.data.controlsMode == null)
+		switch (vpadMode)
 		{
-			FlxG.save.data.controlsMode = 'Pad-Right';
-			FlxG.save.flush();
+			case 1:
+				_virtualPad = new FlxVirtualPad(FULL, // A
+					NONE);
+			case 2:
+				_virtualPad = new FlxVirtualPad(FULL, // A
+					NONE);
+				_virtualPad = config.loadcustom(_virtualPad);
+			default: // 0
+				_virtualPad = new FlxVirtualPad(RIGHT_FULL, // A
+					NONE);
 		}
 
-		return FlxG.save.data.controlsMode;
+		_virtualPad.alpha = 0.75;
+		add(_virtualPad);	
 	}
 
-	private static function set_mode(mode:String = 'Pad-Right'):String
-	{
-		FlxG.save.data.controlsMode = mode;
-		FlxG.save.flush();
 
-		return mode;
-	}
-
-	private static function get_customVirtualPad():FlxVirtualPad
-	{
-		var virtualPad:FlxVirtualPad = new FlxVirtualPad(RIGHT_FULL, NONE);
-		if (FlxG.save.data.buttons == null)
-			return virtualPad;
-
-		var tempCount:Int = 0;
-		for (buttons in virtualPad)
+	public static function getModeFromNumber(modeNum:Int):ControlsGroup {
+		return switch (modeNum)
 		{
-			buttons.x = FlxG.save.data.buttons[tempCount].x;
-			buttons.y = FlxG.save.data.buttons[tempCount].y;
-			tempCount++;
-		}
+			case 0: VIRTUALPAD_RIGHT;
+			case 1: VIRTUALPAD_LEFT;
+			case 2: KEYBOARD;
+			case 3: VIRTUALPAD_CUSTOM;
+			case 4:	HITBOX;
 
-		return virtualPad;
-	}
+			default: VIRTUALPAD_RIGHT;
 
-	private static function set_customVirtualPad(virtualPad:FlxVirtualPad):FlxVirtualPad
-	{
-		if (FlxG.save.data.buttons == null)
-		{
-			FlxG.save.data.buttons = new Array();
-			for (buttons in virtualPad)
-			{
-				FlxG.save.data.buttons.push(FlxPoint.get(buttons.x, buttons.y));
-				FlxG.save.flush();
-			}
 		}
-		else
-		{
-			var tempCount:Int = 0;
-			for (buttons in virtualPad)
-			{
-				FlxG.save.data.buttons[tempCount] = FlxPoint.get(buttons.x, buttons.y);
-				FlxG.save.flush();
-				tempCount++;
-			}
-		}
-
-		return virtualPad;
 	}
 }
+
+enum ControlsGroup {
+	VIRTUALPAD_RIGHT;
+	VIRTUALPAD_LEFT;
+	KEYBOARD;
+	VIRTUALPAD_CUSTOM;
+	HITBOX;
+}
+#end

@@ -1,6 +1,12 @@
 package;
 
 import Song.SwagSong;
+import flixel.FlxG;
+
+/**
+ * ...
+ * @author
+ */
 
 typedef BPMChangeEvent =
 {
@@ -18,18 +24,21 @@ class Conductor
 	public static var lastSongPos:Float;
 	public static var offset:Float = 0;
 
-	public static var safeFrames:Float = 8;
-
-	public static var goodZone:Float = 0.25;
-	public static var badZone:Float = 0.50;
-	public static var shitZone:Float = 0.75;
-
-	public static var safeZoneOffset:Float = (safeFrames / 60) * 1000; // is calculated in create(), is safeFrames in milliseconds
+	public static var safeFrames:Int = 10;
+	public static var safeZoneOffset:Float = Math.floor((safeFrames / 60) * 1000); // is calculated in create(), is safeFrames in milliseconds
+	public static var timeScale:Float = Conductor.safeZoneOffset / 166;
 
 	public static var bpmChangeMap:Array<BPMChangeEvent> = [];
 
 	public function new()
 	{
+	}
+
+	public static function recalculateTimings()
+	{
+		Conductor.safeFrames = FlxG.save.data.frames;
+		Conductor.safeZoneOffset = Math.floor((Conductor.safeFrames / 60) * 1000);
+		Conductor.timeScale = Conductor.safeZoneOffset / 166;
 	}
 
 	public static function mapBPMChanges(song:SwagSong)
@@ -41,7 +50,7 @@ class Conductor
 		var totalPos:Float = 0;
 		for (i in 0...song.notes.length)
 		{
-			if (song.notes[i].changeBPM && song.notes[i].bpm != curBPM)
+			if(song.notes[i].changeBPM && song.notes[i].bpm != curBPM)
 			{
 				curBPM = song.notes[i].bpm;
 				var event:BPMChangeEvent = {

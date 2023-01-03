@@ -17,14 +17,10 @@ typedef SwagSong =
 
 	var player1:String;
 	var player2:String;
+	var gfVersion:String;
+	var noteStyle:String;
 	var stage:String;
-	var gf:String;
 	var validScore:Bool;
-}
-
-typedef SongEvents =
-{
-	var events:Array<Dynamic>;
 }
 
 class Song
@@ -37,8 +33,9 @@ class Song
 
 	public var player1:String = 'bf';
 	public var player2:String = 'dad';
+	public var gfVersion:String = '';
+	public var noteStyle:String = '';
 	public var stage:String = '';
-	public var gf:String = 'gf';
 
 	public function new(song, notes, bpm)
 	{
@@ -49,7 +46,18 @@ class Song
 
 	public static function loadFromJson(jsonInput:String, ?folder:String):SwagSong
 	{
-		var rawJson = Assets.getText(Paths.json(folder.toLowerCase() + '/' + jsonInput.toLowerCase())).trim();
+		trace(jsonInput);
+
+		// pre lowercasing the folder name
+		var folderLowercase = StringTools.replace(folder, " ", "-").toLowerCase();
+		switch (folderLowercase) {
+			case 'dad-battle': folderLowercase = 'dadbattle';
+			case 'philly-nice': folderLowercase = 'philly';
+		}
+		
+		trace('loading ' + folderLowercase + '/' + jsonInput.toLowerCase());
+
+		var rawJson = Assets.getText(Paths.json(folderLowercase + '/' + jsonInput.toLowerCase())).trim();
 
 		while (!rawJson.endsWith("}"))
 		{
@@ -80,12 +88,6 @@ class Song
 	{
 		var swagShit:SwagSong = cast Json.parse(rawJson).song;
 		swagShit.validScore = true;
-		return swagShit;
-	}
-
-	public static function parseEventJSON(rawJson:String):SongEvents
-	{
-		var swagShit:SongEvents = cast Json.parse(rawJson).events;
 		return swagShit;
 	}
 }
