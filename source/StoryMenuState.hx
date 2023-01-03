@@ -54,7 +54,7 @@ class StoryMenuState extends MusicBeatState
 		openfl.Lib.current.stage.frameRate = Main.framerate;
 
 		weekData = [
-			['Bopeebo', 'Fresh', 'Dadbattle']
+			['Summer-Sunset', 'Energizer', 'Epic']
 		];
 
 		weekCharacters = [

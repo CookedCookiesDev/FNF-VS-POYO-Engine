@@ -82,6 +82,7 @@ class Startup extends FlxState
 	public static var thing = false;
 
 	var gtfo:Bool = false;
+	var gtfo2:Bool = false;
 	var StringText:String = "FNF: VS POYO is a fanmade mod for the game Friday Night Funkin'";
 
 	override function create()
@@ -151,7 +152,7 @@ class Startup extends FlxState
 
 	override function update(elapsed)
 	{
-		if (splash.animation.curAnim.finished && splash.animation.curAnim.name == "end")
+		if (gtfo2)
 		{
 			FlxG.switchState(nextState);
 		}
@@ -164,6 +165,10 @@ class Startup extends FlxState
 			splash.animation.play("end");
 			splash.updateHitbox();
 			splash.screenCenter();
+			new FlxTimer().start(5, function(tmr:FlxTimer)
+			{
+				gtfo2 = true;
+			});
 		}
 
 		super.update(elapsed);
