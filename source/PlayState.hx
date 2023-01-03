@@ -2131,9 +2131,9 @@ class PlayState extends MusicBeatState
 				FlxG.sound.play(Paths.sound('missnote' + FlxG.random.int(1, 3)), FlxG.random.float(0.1, 0.2));
 			}
 
-			setBoyfriendInvuln(5 / 60);
+//			setBoyfriendInvuln(5 / 60);
 
-			if (boyfriend.canAutoAnim)
+			/*if (boyfriend.canAutoAnim)
 			{
 				switch (direction)
 				{
@@ -2146,7 +2146,7 @@ class PlayState extends MusicBeatState
 					case 0:
 						boyfriend.playAnim('singLEFTmiss', true);
 				}
-			}
+			}*/
 
 			updateAccuracy();
 		}
@@ -2176,9 +2176,9 @@ class PlayState extends MusicBeatState
 
 			FlxG.sound.play(Paths.sound('missnote' + FlxG.random.int(1, 3)), FlxG.random.float(0.1, 0.2));
 
-			setBoyfriendInvuln(4 / 60);
+			//setBoyfriendInvuln(4 / 60);
 
-			if (boyfriend.canAutoAnim)
+			/*if (boyfriend.canAutoAnim)
 			{
 				switch (direction)
 				{
@@ -2191,7 +2191,7 @@ class PlayState extends MusicBeatState
 					case 0:
 						boyfriend.playAnim('singLEFTmiss', true);
 				}
-			}
+			}*/
 		}
 	}
 
