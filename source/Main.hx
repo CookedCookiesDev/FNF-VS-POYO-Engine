@@ -84,7 +84,7 @@ class Main extends Sprite
 		gameHeight = 720;
 		zoom = 1;
 		#end
-		game = new FlxGame(gameWidth, gameHeight, initialState, zoom, framerate, framerate, skipSplash, startFullscreen);
+		game = new FlxGame(gameWidth, gameHeight, initialState, framerate, framerate, skipSplash, startFullscreen);
 		addChild(game);
 		
 		fpsCounter = new FPS(10, 3, 0xFFFFFF);
