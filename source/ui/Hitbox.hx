@@ -21,7 +21,7 @@ class Hitbox extends FlxSpriteGroup
 {
     public var hitbox:FlxSpriteGroup;
 
-    var sizex:Int = 320;
+    var sizex:Float = 320;
 
     var screensizey:Int = 720;
 
@@ -47,7 +47,7 @@ class Hitbox extends FlxSpriteGroup
 
     public function createhitbox(X:Float, framestring:String) {
         var button = new FlxButton(X, 0);
-        button.setGraphicSize(sizeX, FlxG.height);
+        button.setGraphicSize(sizex, FlxG.height);
         button.updateHitbox();
         return button;
     }
