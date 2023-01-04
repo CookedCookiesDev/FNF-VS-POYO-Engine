@@ -1156,6 +1156,7 @@ class PlayState extends MusicBeatState
 					if (FlxG.save.data.middlescroll) {
 						swagNote.x -= (Note.swagWidth * 2);
 						swagNote.alpha = 1;
+					}
 				}
 			}
 			daBeats += 1;
