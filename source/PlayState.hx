@@ -2038,11 +2038,12 @@ class PlayState extends MusicBeatState
 			{
 				case false:
 					if (controlPressArray[nextNote.noteData] && nextNote.canBeHit) {
-						if (nextNote.strumTime ~= dumbNote.strumTime)
+						if (nextNote.strumTime ~= dumbNote.strumTime) {
 							goodNoteHit(nextNote);
-						else
+						} else {
 							goodNoteHit(nextNote);
 							goodNoteHit(dumbNote, false);
+						}
 					}
 				case true:
 					if (controlArray[nextNote.noteData] && nextNote.canBeHit)
