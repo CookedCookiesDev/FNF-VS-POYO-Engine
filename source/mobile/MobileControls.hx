@@ -1,5 +1,5 @@
 #if mobileC
-package mobile;
+package mobile.Mobilecontrols;
 
 import flixel.FlxG;
 import flixel.group.FlxSpriteGroup;
