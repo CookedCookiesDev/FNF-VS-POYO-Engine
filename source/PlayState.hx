@@ -1715,7 +1715,7 @@ class PlayState extends MusicBeatState
 				// daNote.y = (strumLine.y - (songTime - daNote.strumTime) * (0.45 * PlayState.SONG.speed));
 
 				// I wouldn't have found this error with downscroll if I hadn't looked into the kade engine code (thanks to kade dev)
-				if (daNote.y < -daNote.height && !downscroll_isenabled || (daNote.y >= strumLine.y + 106) && downscroll_isenabled)
+				if (daNote.y < -daNote.height && daNote.mustPress && !downscroll_isenabled || (daNote.y >= strumLine.y + 106) && daNote.mustPress && downscroll_isenabled)
 				{
 					if (daNote.tooLate || !daNote.wasGoodHit)
 						noteMiss(daNote.noteData);
@@ -2032,12 +2032,18 @@ class PlayState extends MusicBeatState
 			nextNoteArray[daNote.noteData].sort((a, b) -> Std.int(a.strumTime - b.strumTime));
 
 			var nextNote = nextNoteArray[daNote.noteData][0];
+			var dumbNote = nextNoteArray[daNote.noteData][1];
 
 			switch(daNote.isSustainNote)
 			{
 				case false:
-					if (controlPressArray[nextNote.noteData] && nextNote.canBeHit)
-						goodNoteHit(nextNote);
+					if (controlPressArray[nextNote.noteData] && nextNote.canBeHit) {
+						if (nextNote.strumTime ~= dumbNote.strumTime)
+							goodNoteHit(nextNote);
+						else
+							goodNoteHit(nextNote);
+							goodNoteHit(dumbNote, false);
+					}
 				case true:
 					if (controlArray[nextNote.noteData] && nextNote.canBeHit)
 						goodNoteHit(nextNote);
@@ -2166,33 +2172,35 @@ class PlayState extends MusicBeatState
 		}
 	}
 
-	function goodNoteHit(note:Note):Void
+	function goodNoteHit(note:Note, ?real:Bool = true):Void
 	{
 		if (!note.wasGoodHit)
 		{
-			if (!note.isSustainNote)
-			{
-				popUpScore(note.strumTime);
-				combo += 1;
-			}
-
-			if (note.noteData >= 0)
-				health += 0.023;
-			else
-				health += 0.004;
-
-			boyfriend.playAnim(singAnims[note.noteData], true);
-
-			playerStrums.forEach(function(spr:FlxSprite)
-			{
-				if (Math.abs(note.noteData) == spr.ID)
+			if (real) {
+				if (!note.isSustainNote)
 				{
-					spr.animation.play('confirm', true);
+					popUpScore(note.strumTime);
+					combo += 1;
 				}
-			});
-
-			note.wasGoodHit = true;
-			vocals.volume = 1;
+		
+				if (note.noteData >= 0)
+					health += 0.023;
+				else
+					health += 0.004;
+		
+				boyfriend.playAnim(singAnims[note.noteData], true);
+		
+				playerStrums.forEach(function(spr:FlxSprite)
+				{
+					if (Math.abs(note.noteData) == spr.ID)
+					{
+						spr.animation.play('confirm', true);
+					}
+				});
+		
+				note.wasGoodHit = true;
+				vocals.volume = 1;
+			}
 
 			if (!note.isSustainNote)
 			{
