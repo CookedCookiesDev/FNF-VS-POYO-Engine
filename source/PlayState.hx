@@ -2023,7 +2023,7 @@ class PlayState extends MusicBeatState
 		var upArray:Array<Note> = [];
 		var rightArray:Array<Note> = [];
 
-		var nextNoteArray:Array<Array> =  [leftArray, downArray, upArray, rightArray];
+		var nextNoteArray:Array<Dynamic> =  [leftArray, downArray, upArray, rightArray];
 		//dumb ik
 
 		notes.forEachAlive(function(daNote:Note)
