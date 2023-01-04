@@ -49,8 +49,6 @@ class Mobilecontrols extends FlxSpriteGroup
     {
         super();
 
-		downscroll_isenabled = config.getdownscroll();
-
 		// load control mode num from Config.hx
 		controlmode = config.getcontrolmode();
 
