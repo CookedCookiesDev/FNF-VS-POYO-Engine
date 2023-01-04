@@ -1,10 +1,10 @@
 package;
 
-import flixel.input.gamepad.FlxGamepad;
-import Controls.KeyboardScheme;
+import lime.utils.Assets;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
+import flixel.addons.transition.FlxTransitionableState;
 import flixel.effects.FlxFlicker;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -12,12 +12,9 @@ import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
-import flixel.util.FlxTimer;
+//import io.newgrounds.NG;
 import lime.app.Application;
-
-#if windows
-import Discord.DiscordClient;
-#end
+import ui.FlxVirtualPad;
 
 using StringTools;
 
@@ -28,27 +25,20 @@ class MainMenuState extends MusicBeatState
 	var menuItems:FlxTypedGroup<FlxSprite>;
 
 	#if !switch
-	var optionShit:Array<String> = ['story mode', 'freeplay', 'donate', 'options'];
+	var optionShit:Array<String> = ['story mode', 'freeplay', 'options', 'donate'];
 	#else
 	var optionShit:Array<String> = ['story mode', 'freeplay'];
 	#end
 
-	var newGaming:FlxText;
-	var newGaming2:FlxText;
-	public static var firstStart:Bool = true;
-
-	// version of engine in project.xml :)
-
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;
-	public static var finishedFunnyMove:Bool = false;
+
+	var _pad:FlxVirtualPad;
 
 	override function create()
 	{
-		#if windows
-		// Updating Discord Rich Presence
-		DiscordClient.changePresence("In the Menus", null);
-		#end
+		transIn = FlxTransitionableState.defaultTransIn;
+		transOut = FlxTransitionableState.defaultTransOut;
 
 		if (!FlxG.sound.music.playing)
 		{
@@ -57,9 +47,9 @@ class MainMenuState extends MusicBeatState
 
 		persistentUpdate = persistentDraw = true;
 
-		var bg:FlxSprite = new FlxSprite(-100).loadGraphic(Paths.image('menuBG'));
+		var bg:FlxSprite = new FlxSprite(-80).loadGraphic(Paths.image('menuBG'));
 		bg.scrollFactor.x = 0;
-		bg.scrollFactor.y = 0.10;
+		bg.scrollFactor.y = 0.18;
 		bg.setGraphicSize(Std.int(bg.width * 1.1));
 		bg.updateHitbox();
 		bg.screenCenter();
@@ -71,7 +61,7 @@ class MainMenuState extends MusicBeatState
 
 		magenta = new FlxSprite(-80).loadGraphic(Paths.image('menuDesat'));
 		magenta.scrollFactor.x = 0;
-		magenta.scrollFactor.y = 0.10;
+		magenta.scrollFactor.y = 0.18;
 		magenta.setGraphicSize(Std.int(magenta.width * 1.1));
 		magenta.updateHitbox();
 		magenta.screenCenter();
@@ -88,7 +78,7 @@ class MainMenuState extends MusicBeatState
 
 		for (i in 0...optionShit.length)
 		{
-			var menuItem:FlxSprite = new FlxSprite(0, FlxG.height * 1.6);
+			var menuItem:FlxSprite = new FlxSprite(0, 60 + (i * 160));
 			menuItem.frames = tex;
 			menuItem.animation.addByPrefix('idle', optionShit[i] + " basic", 24);
 			menuItem.animation.addByPrefix('selected', optionShit[i] + " white", 24);
@@ -98,38 +88,25 @@ class MainMenuState extends MusicBeatState
 			menuItems.add(menuItem);
 			menuItem.scrollFactor.set();
 			menuItem.antialiasing = true;
-			if (firstStart)
-				FlxTween.tween(menuItem,{y: 60 + (i * 160)},1 + (i * 0.25) ,{ease: FlxEase.expoInOut, onComplete: function(flxTween:FlxTween) 
-					{ 
-						finishedFunnyMove = true; 
-						changeItem();
-					}});
-			else
-				menuItem.y = 60 + (i * 160);
 		}
 
-		firstStart = false;
+		FlxG.camera.follow(camFollow, null, 0.06);
 
-		FlxG.camera.follow(camFollow, null, 0.60 * (60 / FlxG.save.data.fpsCap));
+		
+		var githubcurver:String = Assets.getText("assets/aboutmod.txt");
 
-		var versionShit:FlxText = new FlxText(5, FlxG.height - 18, 0, "FNF 0.2.7.1 | Kade Engine 1.5.4" #if mobileC + " | KE Android " + Application.current.meta.get('version') + " - Ported by TheLeerName" #else + " - Edited by TheLeerName " + "(" + Application.current.meta.get('version') + ")" #end, 12);
+		var versionShit:FlxText = new FlxText(10, FlxG.height - 20, 0, "v" + Application.current.meta.get('version') + " " + githubcurver, 12);
 		versionShit.scrollFactor.set();
-		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		versionShit.setFormat("VCR OSD Mono", 18, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
 
 		// NG.core.calls.event.logEvent('swag').send();
 
-
-		if (FlxG.save.data.dfjk)
-			controls.setKeyboardScheme(KeyboardScheme.Solo, true);
-		else
-			controls.setKeyboardScheme(KeyboardScheme.Duo(true), true);
-
 		changeItem();
 
-		#if mobileC
-		addVirtualPad(UP_DOWN, A_B);
-		#end
+		_pad = new FlxVirtualPad(UP_DOWN, A_B);
+		_pad.alpha = 0.75;
+		this.add(_pad);
 
 		super.create();
 	}
@@ -145,44 +122,52 @@ class MainMenuState extends MusicBeatState
 
 		if (!selectedSomethin)
 		{
-			var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
+			var UP_P = _pad.buttonUp.justPressed;
+			var DOWN_P = _pad.buttonDown.justPressed;
+			var BACK = _pad.buttonB.justPressed;
+			var ACCEPT = _pad.buttonA.justPressed;
 
-			if (gamepad != null)
+			if (UP_P)
 			{
-				if (gamepad.justPressed.DPAD_UP)
-					changeItem(-1);
-				if (gamepad.justPressed.DPAD_DOWN)
-					changeItem(1);
+				FlxG.sound.play(Paths.sound('scrollMenu'));
+				changeItem(-1);
 			}
 
-			if (controls.UP_P)
-				changeItem(-1);
-
-			if (controls.DOWN_P)
+			if (DOWN_P)
+			{
+				FlxG.sound.play(Paths.sound('scrollMenu'));
 				changeItem(1);
+			}
 
-			if (controls.BACK #if android || FlxG.android.justReleased.BACK #end)
+			#if android
+			if (BACK || FlxG.android.justReleased.BACK)
+			{
 				FlxG.switchState(new TitleState());
+			}
+			#end
 
-			if (controls.ACCEPT)
+			if (ACCEPT)
 			{
 				if (optionShit[curSelected] == 'donate')
 				{
-					fancyOpenURL("https://ninja-muffin24.itch.io/funkin");
+					#if linux
+					Sys.command('/usr/bin/xdg-open', ["https://ninja-muffin24.itch.io/funkin", "&"]);
+					#else
+					FlxG.openURL('https://ninja-muffin24.itch.io/funkin');
+					#end
 				}
 				else
 				{
 					selectedSomethin = true;
 					FlxG.sound.play(Paths.sound('confirmMenu'));
-					
-					if (FlxG.save.data.flashing)
-						FlxFlicker.flicker(magenta, 1.1, 0.15, false);
+
+					FlxFlicker.flicker(magenta, 1.1, 0.15, false);
 
 					menuItems.forEach(function(spr:FlxSprite)
 					{
 						if (curSelected != spr.ID)
 						{
-							FlxTween.tween(spr, {alpha: 0}, 1.3, {
+							FlxTween.tween(spr, {alpha: 0}, 0.4, {
 								ease: FlxEase.quadOut,
 								onComplete: function(twn:FlxTween)
 								{
@@ -192,20 +177,26 @@ class MainMenuState extends MusicBeatState
 						}
 						else
 						{
-							if (FlxG.save.data.flashing)
+							FlxFlicker.flicker(spr, 1, 0.06, false, false, function(flick:FlxFlicker)
 							{
-								FlxFlicker.flicker(spr, 1, 0.06, false, false, function(flick:FlxFlicker)
+								var daChoice:String = optionShit[curSelected];
+
+								switch (daChoice)
 								{
-									goToState();
-								});
-							}
-							else
-							{
-								new FlxTimer().start(1, function(tmr:FlxTimer)
-								{
-									goToState();
-								});
-							}
+									case 'story mode':
+										FlxG.switchState(new StoryMenuState());
+										trace("Story Menu Selected");
+									case 'freeplay':
+										FlxG.switchState(new FreeplayState());
+
+										trace("Freeplay Menu Selected");
+
+									case 'options':
+										FlxTransitionableState.skipNextTransIn = true;
+										FlxTransitionableState.skipNextTransOut = true;
+										FlxG.switchState(new options.OptionsMenu());
+								}
+							});
 						}
 					});
 				}
@@ -219,43 +210,21 @@ class MainMenuState extends MusicBeatState
 			spr.screenCenter(X);
 		});
 	}
-	
-	function goToState()
-	{
-		var daChoice:String = optionShit[curSelected];
-
-		switch (daChoice)
-		{
-			case 'story mode':
-				FlxG.switchState(new StoryMenuState());
-				trace("Story Menu Selected");
-			case 'freeplay':
-				FlxG.switchState(new FreeplayState());
-
-				trace("Freeplay Menu Selected");
-
-			case 'options':
-				FlxG.switchState(new OptionsMenu());
-		}
-	}
 
 	function changeItem(huh:Int = 0)
 	{
-		FlxG.sound.play(Paths.sound('scrollMenu'));
-		if (finishedFunnyMove)
-		{
-			curSelected += huh;
+		curSelected += huh;
 
-			if (curSelected >= menuItems.length)
-				curSelected = 0;
-			if (curSelected < 0)
-				curSelected = menuItems.length - 1;
-		}
+		if (curSelected >= menuItems.length)
+			curSelected = 0;
+		if (curSelected < 0)
+			curSelected = menuItems.length - 1;
+
 		menuItems.forEach(function(spr:FlxSprite)
 		{
 			spr.animation.play('idle');
 
-			if (spr.ID == curSelected && finishedFunnyMove)
+			if (spr.ID == curSelected)
 			{
 				spr.animation.play('selected');
 				camFollow.setPosition(spr.getGraphicMidpoint().x, spr.getGraphicMidpoint().y);

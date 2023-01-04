@@ -1,6 +1,6 @@
+#if !mobile
 package;
 
-#if windows
 import Sys.sleep;
 import discord_rpc.DiscordRpc;
 
@@ -12,7 +12,7 @@ class DiscordClient
 	{
 		trace("Discord Client starting...");
 		DiscordRpc.start({
-			clientID: "557069829501091850", // change this to what ever the fuck you want lol
+			clientID: "814588678700924999",
 			onReady: onReady,
 			onError: onError,
 			onDisconnected: onDisconnected
@@ -33,14 +33,14 @@ class DiscordClient
 	{
 		DiscordRpc.shutdown();
 	}
-
+	
 	static function onReady()
 	{
 		DiscordRpc.presence({
 			details: "In the Menus",
 			state: null,
 			largeImageKey: 'icon',
-			largeImageText: "fridaynightfunkin"
+			largeImageText: "Friday Night Funkin'"
 		});
 	}
 
@@ -76,7 +76,7 @@ class DiscordClient
 			details: details,
 			state: state,
 			largeImageKey: 'icon',
-			largeImageText: "fridaynightfunkin",
+			largeImageText: "Friday Night Funkin'",
 			smallImageKey : smallImageKey,
 			// Obtained times are in milliseconds so they are divided so Discord can use it
 			startTimestamp : Std.int(startTimestamp / 1000),
