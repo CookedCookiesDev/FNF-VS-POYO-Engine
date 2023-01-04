@@ -2017,17 +2017,23 @@ class PlayState extends MusicBeatState
 
 		var controlPressArray:Array<Bool> = [leftP, downP, upP, rightP];
 		var controlArray:Array<Bool> = [left, down, up, right];
+		var nextNoteArray:Array<Note> =  [[], [], [], []]
 
 		notes.forEachAlive(function(daNote:Note)
 		{
+			nextNoteArray[daNote.noteData].push(daNote);
+			nextNoteArray[daNote.noteData].sort((a, b) -> Std.int(a.strumTime - b.strumTime));
+
+			var nextNote = nextNoteArray[daNote.noteData][0];
+
 			switch(daNote.isSustainNote)
 			{
 				case false:
-					if (controlPressArray[daNote.noteData] && daNote.canBeHit)
-						goodNoteHit(daNote);
+					if (controlPressArray[nextNote.noteData] && nextNote.canBeHit)
+						goodNoteHit(nextNote);
 				case true:
-					if (controlArray[daNote.noteData] && daNote.canBeHit)
-						goodNoteHit(daNote);
+					if (controlArray[nextNote.noteData] && nextNote.canBeHit)
+						goodNoteHit(nextNote);
 			}
 		});
 
@@ -2168,7 +2174,7 @@ class PlayState extends MusicBeatState
 			else
 				health += 0.004;
 
-			boyfriend.playAnim(singAnims[daNote.noteData], true);
+			boyfriend.playAnim(singAnims[note.noteData], true);
 
 			playerStrums.forEach(function(spr:FlxSprite)
 			{
