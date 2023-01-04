@@ -145,6 +145,8 @@ class PlayState extends MusicBeatState
 	var config:Config = new Config();
 	var downscroll_isenabled:Bool = false;
 
+	var singAnims:Array<String> = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'];
+
 	override public function create()
 	{
 		if (FlxG.sound.music != null)
@@ -1697,17 +1699,7 @@ class PlayState extends MusicBeatState
 							altAnim = '-alt';
 					}
 
-					switch (Math.abs(daNote.noteData))
-					{
-						case 0:
-							dad.playAnim('singLEFT' + altAnim, true);
-						case 1:
-							dad.playAnim('singDOWN' + altAnim, true);
-						case 2:
-							dad.playAnim('singUP' + altAnim, true);
-						case 3:
-							dad.playAnim('singRIGHT' + altAnim, true);
-					}
+					dad.playAnim(singAnims[daNote.noteData] + altAnim, true);
 
 					dad.holdTimer = 0;
 
@@ -1726,10 +1718,7 @@ class PlayState extends MusicBeatState
 				if (daNote.y < -daNote.height && !downscroll_isenabled || (daNote.y >= strumLine.y + 106) && downscroll_isenabled)
 				{
 					if (daNote.tooLate || !daNote.wasGoodHit)
-					{
-						health -= 0.0475;
-						vocals.volume = 0;
-					}
+						noteMiss(daNote.noteData);
 
 					daNote.active = false;
 					daNote.visible = false;
@@ -2009,7 +1998,6 @@ class PlayState extends MusicBeatState
 		var rightR = mcontrols.RIGHT_R;
 		var downR = mcontrols.DOWN_R;
 		var leftR = mcontrols.LEFT_R;
-
 		#else
 		var up = controls.UP;
 		var right = controls.RIGHT;
@@ -2180,17 +2168,7 @@ class PlayState extends MusicBeatState
 			else
 				health += 0.004;
 
-			switch (note.noteData)
-			{
-				case 0:
-					boyfriend.playAnim('singLEFT', true);
-				case 1:
-					boyfriend.playAnim('singDOWN', true);
-				case 2:
-					boyfriend.playAnim('singUP', true);
-				case 3:
-					boyfriend.playAnim('singRIGHT', true);
-			}
+			boyfriend.playAnim(singAnims[daNote.noteData], true);
 
 			playerStrums.forEach(function(spr:FlxSprite)
 			{
