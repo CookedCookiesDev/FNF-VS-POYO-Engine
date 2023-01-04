@@ -1147,7 +1147,8 @@ class PlayState extends MusicBeatState
 				}
 
 				swagNote.mustPress = gottaHitNote;
-				swagNote.alpha = 0;
+				if (FlxG.save.data.middlescroll)
+					swagNote.alpha = 0;
 
 				if (swagNote.mustPress)
 				{
