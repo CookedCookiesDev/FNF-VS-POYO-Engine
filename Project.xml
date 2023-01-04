@@ -160,6 +160,32 @@
 	<icon path="art/icon512.png" size='512'/>
 	<icon path="art/iconOG.png" />
 
+	
+	<!--Allow working memory greater than 1 Gig-->
+	<haxedef name="HXCPP_GC_BIG_BLOCKS" />
+
+	<!--Always enable Null Object Reference check-->
+	<haxedef name="HXCPP_CHECK_POINTER" />
+	<haxedef name="HXCPP_STACK_LINE" />
+	<haxedef name="HXCPP_STACK_TRACE"/>
+
+	<section if="android">
+		<!--Permissions-->
+		<config:android permission="android.permission.INTERNET" />
+		<config:android permission="android.permission.VIBRATE" />
+
+		<!--Gradle-->
+		<config:android gradle-version="7.6" gradle-plugin="7.3.1" />
+
+		<!--Audio Recording Fix-->
+		<config:android target-sdk-version="29" if="${lime <= 8.0.0}" />
+	</section>
+
+	<section if="ios">
+		<!--Dependency--> 
+		<dependency name="Metal.framework" />
+		<dependency name="WebKit.framework" />
+	</section>
 
 	<!-- <haxedef name="SKIP_TO_PLAYSTATE" if="debug" /> -->
 	<haxedef name="NG_LOGIN" if="newgrounds" />
