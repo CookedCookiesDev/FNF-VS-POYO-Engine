@@ -1,5 +1,5 @@
 #if mobileC
-package mobile.Hitbox;
+package Hitbox;
 
 import flixel.graphics.FlxGraphic;
 import flixel.addons.ui.FlxButtonPlus;

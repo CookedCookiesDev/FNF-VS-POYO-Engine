@@ -1,5 +1,5 @@
-#if mobileC
-package mobile.FlxVirtualPad;
+#if mobile
+package FlxVirtualPad;
 
 import flixel.FlxG;
 import flixel.graphics.frames.FlxTileFrames;
