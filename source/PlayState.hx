@@ -63,9 +63,6 @@ import lime.utils.Assets;
 import openfl.display.BlendMode;
 import openfl.display.StageQuality;
 import openfl.filters.ShaderFilter;
-#if mobileC
-import mobile.Mobilecontrols;
-#end
 #if windows
 import Discord.DiscordClient;
 import Sys;
@@ -227,9 +224,6 @@ class PlayState extends MusicBeatState
 	private var replayAna:Analysis = new Analysis(); // replay analysis
 
 	public static var highestCombo:Int = 0;
-	#if mobileC
-	var mcontrols:Mobilecontrols; 
-	#end
 
 	private var executeModchart = false;
 
@@ -1082,27 +1076,6 @@ class PlayState extends MusicBeatState
 		songWatermark.cameras = [camHUD];
 		if (loadRep)
 			replayTxt.cameras = [camHUD];
-
-		#if mobileC
-			mcontrols = new Mobilecontrols();
-			switch (mcontrols.mode)
-			{
-				case VIRTUALPAD_RIGHT | VIRTUALPAD_LEFT | VIRTUALPAD_CUSTOM:
-					controls.setVirtualPad(mcontrols._virtualPad, FULL, NONE);
-				case HITBOX:
-					controls.setHitBox(mcontrols._hitbox);
-				default:
-			}
-			trackedinputs = controls.trackedinputs;
-			controls.trackedinputs = [];
-
-			var camcontrol = new FlxCamera();
-			FlxG.cameras.add(camcontrol);
-			camcontrol.bgColor.alpha = 0;
-			mcontrols.cameras = [camcontrol];
-
-			add(mcontrols);
-		#end
 
 		// if (SONG.song == 'South')
 		// FlxG.camera.alpha = 0.7;
