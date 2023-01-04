@@ -143,7 +143,6 @@ class PlayState extends MusicBeatState
 	#end
 
 	var config:Config = new Config();
-	var downscroll_isenabled:Bool = false;
 
 	var singAnims:Array<String> = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'];
 
@@ -151,11 +150,6 @@ class PlayState extends MusicBeatState
 	{
 		if (FlxG.sound.music != null)
 			FlxG.sound.music.stop();
-
-
-		// part of mobile controls in 750 line
-		// get downscroll settings
-		downscroll_isenabled = false;
 
 
 		// var gameCam:FlxCamera = FlxG.camera;
@@ -705,7 +699,7 @@ class PlayState extends MusicBeatState
 
 		Conductor.songPosition = -5000;
 
-		if (!downscroll_isenabled){
+		if (!FlxG.save.data.downscroll){
 			strumLine = new FlxSprite(0, 50).makeGraphic(FlxG.width, 10);
 		}else{
 			strumLine = new FlxSprite(0, FlxG.height - 150).makeGraphic(FlxG.width, 10);
@@ -758,7 +752,7 @@ class PlayState extends MusicBeatState
 		add(mcontrols);
 		#end
 
-		var ybar:Float = downscroll_isenabled ? FlxG.height * 0.1 : FlxG.height * 0.9;
+		var ybar:Float = FlxG.save.data.downscroll ? FlxG.height * 0.1 : FlxG.height * 0.9;
 
 		healthBarBG = new FlxSprite(0, ybar).loadGraphic(Paths.image('healthBar'));
 		healthBarBG.screenCenter(X);
@@ -1149,12 +1143,17 @@ class PlayState extends MusicBeatState
 				}
 
 				swagNote.mustPress = gottaHitNote;
+				swagNote.alpha = 0;
 
 				if (swagNote.mustPress)
 				{
-					swagNote.x += FlxG.width / 2; // general offset
+					if (FlxG.save.data.middlescroll) {
+						swagNote.x = FlxG.width / 2 - (Note.swagWidth * 2);
+						swagNote.alpha = 1;
+					} else {
+						swagNote.x += FlxG.width / 2; // general offset
+					}
 				}
-				else {}
 			}
 			daBeats += 1;
 		}
@@ -1269,8 +1268,15 @@ class PlayState extends MusicBeatState
 			}
 
 			babyArrow.animation.play('static');
-			babyArrow.x += 50;
+			babyArrow.x += 100;
 			babyArrow.x += ((FlxG.width / 2) * player);
+
+			if (FlxG.save.data.middlescroll) {
+				if (player == 0)
+					babyArrow.visible = false;
+				else if (player == 1)
+					babyArrow.x = FlxG.width - (Note.swagWidth * 2);
+			}
 
 			strumLineNotes.add(babyArrow);
 		}
@@ -1667,7 +1673,7 @@ class PlayState extends MusicBeatState
 					daNote.active = true;
 				}
 
-				if (!downscroll_isenabled) {
+				if (!FlxG.save.data.downscroll) {
 					daNote.y = (strumLine.y - (Conductor.songPosition - daNote.strumTime) * (0.45 * FlxMath.roundDecimal(SONG.speed, 2)));
 				}else {
 					daNote.y = (strumLine.y - (Conductor.songPosition - daNote.strumTime) * (-0.45 * FlxMath.roundDecimal(SONG.speed, 2)));
@@ -1715,7 +1721,7 @@ class PlayState extends MusicBeatState
 				// daNote.y = (strumLine.y - (songTime - daNote.strumTime) * (0.45 * PlayState.SONG.speed));
 
 				// I wouldn't have found this error with downscroll if I hadn't looked into the kade engine code (thanks to kade dev)
-				if (daNote.y < -daNote.height && daNote.mustPress && !downscroll_isenabled || (daNote.y >= strumLine.y + 106) && daNote.mustPress && downscroll_isenabled)
+				if (daNote.y < -daNote.height && daNote.mustPress && !FlxG.save.data.downscroll || (daNote.y >= strumLine.y + 106) && daNote.mustPress && FlxG.save.data.downscroll)
 				{
 					if (daNote.tooLate || !daNote.wasGoodHit)
 						noteMiss(daNote.noteData);

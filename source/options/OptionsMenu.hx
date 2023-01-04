@@ -28,7 +28,13 @@ class OptionsMenu extends MusicBeatState
 
 	private var grpControls:FlxTypedGroup<Alphabet>;
 
-	var menuItems:Array<String> = ['controls', 'downscroll', 'set fps', 'About'];
+	var menuItems:Array<String> = [
+		'controls',
+		'downscroll',
+		'middlescroll',
+		'set fps',
+		'About'
+	];
 
 	var _pad:FlxVirtualPad;
 	var saveTxt:FlxText;
@@ -86,6 +92,9 @@ class OptionsMenu extends MusicBeatState
 		if (daSelected == 'downscroll') {
 			saveTxt.visible = true;
 			saveTxt.text = (FlxG.save.data.downscroll ? 'Enabled' : 'Disabled');
+		} else if (daSelected == 'middlescroll') {
+			saveTxt.visible = true;
+			saveTxt.text = (FlxG.save.data.middlescroll ? 'Enabled' : 'Disabled');
 		} else {
 			saveTxt.visible = false;
 		}
@@ -116,6 +125,11 @@ class OptionsMenu extends MusicBeatState
 						FlxG.save.data.downscroll = false;
 					else
 						FlxG.save.data.downscroll = true;
+				case "middlescroll":
+					if (FlxG.save.data.middlescroll)
+						FlxG.save.data.middlescroll = false;
+					else
+						FlxG.save.data.middlescroll = true;
 				case "set fps":
 					insubstate = true;
 					openSubState(new options.SetFpsSubState());
