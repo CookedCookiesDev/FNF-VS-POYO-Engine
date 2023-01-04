@@ -1,5 +1,5 @@
 #if mobileC
-package mobile;
+package mobile.ControlsState;
 
 import flixel.ui.FlxButton;
 import flixel.addons.ui.FlxUIButton;
