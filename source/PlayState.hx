@@ -155,7 +155,7 @@ class PlayState extends MusicBeatState
 
 		// part of mobile controls in 750 line
 		// get downscroll settings
-		downscroll_isenabled = config.getdownscroll();
+		downscroll_isenabled = false;
 
 
 		// var gameCam:FlxCamera = FlxG.camera;

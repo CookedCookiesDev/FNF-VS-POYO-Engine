@@ -28,9 +28,10 @@ class OptionsMenu extends MusicBeatState
 
 	private var grpControls:FlxTypedGroup<Alphabet>;
 
-	var menuItems:Array<String> = ['controls', 'set fps', 'downscroll: off', 'About'];
+	var menuItems:Array<String> = ['controls', 'downscroll', 'set fps', 'About'];
 
 	var _pad:FlxVirtualPad;
+	var saveTxt:FlxText;
 
 	var UP_P:Bool;
 	var DOWN_P:Bool;
@@ -52,12 +53,14 @@ class OptionsMenu extends MusicBeatState
 		menuBG.antialiasing = true;
 		add(menuBG);
 
+		saveTxt = new FlxText(0, 0, FlxG.width, '', 64);
+		saveTxt.alignment = FlxTextAlign.RIGHT;
+		saveTxt.screenCenter();
+		saveTxt.x += 200;
+		add(saveTxt);
+
 		grpControls = new FlxTypedGroup<Alphabet>();
 		add(grpControls);
-
-		if (config.getdownscroll()){
-			menuItems[menuItems.indexOf('downscroll: off')] = 'downscroll: on';
-		}
 
 		for (i in 0...menuItems.length)
 		{ 
@@ -78,6 +81,14 @@ class OptionsMenu extends MusicBeatState
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+		var daSelected:String = menuItems[curSelected];
+
+		if (daSelected == 'downscroll') {
+			saveTxt.visible = true;
+			saveTxt.text = (FlxG.save.data.downscroll ? 'Enabled' : 'Disabled');
+		} else {
+			saveTxt.visible = false;
+		}
 
 		if (!insubstate){
 			UP_P = _pad.buttonUp.justReleased;
@@ -94,24 +105,20 @@ class OptionsMenu extends MusicBeatState
 		
 		if (ACCEPT)
 		{
-			var daSelected:String = menuItems[curSelected];
-
 			switch (daSelected)
 			{
 				case "controls":
 					FlxG.switchState(new options.CustomControlsState());
-				
 				case "config":
 					trace("hello");
-				
+				case "downscroll":
+					if (FlxG.save.data.downscroll)
+						FlxG.save.data.downscroll = false;
+					else
+						FlxG.save.data.downscroll = true;
 				case "set fps":
 					insubstate = true;
 					openSubState(new options.SetFpsSubState());
-				
-				case "downscroll: on" | "downscroll: off":
-					config.setdownscroll();
-					FlxG.resetState();
-				
 				case "About":
 					FlxG.switchState(new options.AboutState());
 				case "test cutscene":

@@ -14,19 +14,6 @@ class Config {
     	save.bind("saveconrtol");
     }
 
-    public function setdownscroll(?value:Bool):Bool {
-		if (save.data.isdownscroll == null) save.data.isdownscroll = false;
-		
-		save.data.isdownscroll = !save.data.isdownscroll;
-		save.flush();
-        return save.data.isdownscroll;
-	}
-
-    public function getdownscroll():Bool {
-        if (save.data.isdownscroll != null) return save.data.isdownscroll;
-        return false;
-    }
-
     public function getcontrolmode():Int {
         // load control mode num from FlxSave
 		if (save.data.buttonsmode != null) return save.data.buttonsmode[0];
