@@ -1272,7 +1272,7 @@ class PlayState extends MusicBeatState
 			}
 
 			babyArrow.animation.play('static');
-			babyArrow.x += (FlxG.save.data.middlescroll ? 0 : 100);;
+			babyArrow.x += (FlxG.save.data.middlescroll ? 0 : 100);
 			babyArrow.x += ((FlxG.width / 2) * player);
 
 			if (FlxG.save.data.middlescroll) {
