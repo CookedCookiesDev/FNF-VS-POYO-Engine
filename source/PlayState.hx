@@ -2017,7 +2017,7 @@ class PlayState extends MusicBeatState
 
 		var controlPressArray:Array<Bool> = [leftP, downP, upP, rightP];
 		var controlArray:Array<Bool> = [left, down, up, right];
-		var nextNoteArray:Array<Note> =  [[], [], [], []]
+		var nextNoteArray:Array<Note> =  [[], [], [], []];
 
 		notes.forEachAlive(function(daNote:Note)
 		{
