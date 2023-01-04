@@ -2764,7 +2764,6 @@ class PlayState extends MusicBeatState
 
 					FlxG.sound.music.stop();
 					vocals.stop();
-					remove(mcontrols);
 					if (FlxG.save.data.scoreScreen)
 						openSubState(new ResultsScreen());
 					else
@@ -2839,7 +2838,6 @@ class PlayState extends MusicBeatState
 				FlxG.sound.music.stop();
 				vocals.stop();
 
-				remove(mcontrols);
 				if (FlxG.save.data.scoreScreen)
 					openSubState(new ResultsScreen());
 				else
