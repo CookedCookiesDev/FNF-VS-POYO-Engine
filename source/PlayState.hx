@@ -1139,6 +1139,10 @@ class PlayState extends MusicBeatState
 					if (sustainNote.mustPress)
 					{
 						sustainNote.x += FlxG.width / 2; // general offset
+						if (FlxG.save.data.middlescroll) {
+							sustainNote.x -= (Note.swagWidth * 2);
+							sustainNote.alpha = 1;
+						}
 					}
 				}
 
@@ -1147,12 +1151,10 @@ class PlayState extends MusicBeatState
 
 				if (swagNote.mustPress)
 				{
+					swagNote.x += FlxG.width / 2; // general offset
 					if (FlxG.save.data.middlescroll) {
-						swagNote.x = FlxG.width / 2 - (Note.swagWidth * 2);
+						swagNote.x -= (Note.swagWidth * 2);
 						swagNote.alpha = 1;
-					} else {
-						swagNote.x += FlxG.width / 2; // general offset
-					}
 				}
 			}
 			daBeats += 1;
@@ -1268,14 +1270,14 @@ class PlayState extends MusicBeatState
 			}
 
 			babyArrow.animation.play('static');
-			babyArrow.x += 100;
+			babyArrow.x += (FlxG.save.data.middlescroll ? 0 : 100);;
 			babyArrow.x += ((FlxG.width / 2) * player);
 
 			if (FlxG.save.data.middlescroll) {
 				if (player == 0)
 					babyArrow.visible = false;
 				else if (player == 1)
-					babyArrow.x = FlxG.width - (Note.swagWidth * 2);
+					babyArrow.x -= Note.swagWidth * 2;
 			}
 
 			strumLineNotes.add(babyArrow);

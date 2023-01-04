@@ -34,51 +34,21 @@ class Hitbox extends FlxSpriteGroup
     {
         super(widghtScreen, heightScreen);
 
-        sizex = widghtScreen != null ? Std.int(widghtScreen / 4) : 320;
-
+        sizex = FlxG.width / 4;
         
         //add graphic
         hitbox = new FlxSpriteGroup();
         hitbox.scrollFactor.set();
-
-        var hitbox_hint:FlxSprite = new FlxSprite(0, 0).loadGraphic('assets/shared/images/hitbox/hitbox_hint.png');
-
-        hitbox_hint.alpha = 0.2;
-
-        add(hitbox_hint);
-
-
         hitbox.add(add(left = createhitbox(0, "left")));
-
         hitbox.add(add(down = createhitbox(sizex, "down")));
-
         hitbox.add(add(up = createhitbox(sizex * 2, "up")));
-
         hitbox.add(add(right = createhitbox(sizex * 3, "right")));
     }
 
     public function createhitbox(X:Float, framestring:String) {
         var button = new FlxButton(X, 0);
-        var frames = FlxAtlasFrames.fromSparrow('assets/shared/images/hitbox/hitbox.png', 'assets/shared/images/hitbox/hitbox.xml');
-        
-
-        button.loadGraphic(FlxGraphic.fromFrame(frames.getByName(framestring)));
-
-        button.alpha = 0;
-
-    
-        button.onDown.callback = function (){
-            FlxTween.num(0, 0.75, .075, {ease: FlxEase.circInOut}, function (a:Float) { button.alpha = a; });
-        };
-
-        button.onUp.callback = function (){
-            FlxTween.num(0.75, 0, .1, {ease: FlxEase.circInOut}, function (a:Float) { button.alpha = a; });
-        }
-        
-        button.onOut.callback = function (){
-            FlxTween.num(button.alpha, 0, .2, {ease: FlxEase.circInOut}, function (a:Float) { button.alpha = a; });
-        }
-
+        button.setGraphicSize(sizeX, FlxG.height);
+        button.updateHitbox();
         return button;
     }
 
