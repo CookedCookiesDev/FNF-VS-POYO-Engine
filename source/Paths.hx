@@ -179,18 +179,26 @@ class Paths
 
 	inline static public function voices(song:String, ?returnString:Bool = false)
 	{
-		if (!returnString) {
-			var path = 'songs:assets/songs/${song.toLowerCase()}/Voices.$SOUND_EXT';
-			return loadSound(path);
-		} else {
-			return 'songs:assets/songs/${song.toLowerCase()}/Voices.$SOUND_EXT';
-		}
+		var path = 'songs:assets/songs/${song.toLowerCase()}/Voices.$SOUND_EXT';
+		return loadSound(path);
 	}
 
 	inline static public function inst(song:String)
 	{
 		var path = 'songs:assets/songs/${song.toLowerCase()}/Inst.$SOUND_EXT';
 		return loadSound(path);
+	}
+
+	inline static public function voicesS(song:String)
+	{
+		var path = 'songs:assets/songs/${song.toLowerCase()}/Voices.$SOUND_EXT';
+		return path;
+	}
+
+	inline static public function instS(song:String)
+	{
+		var path = 'songs:assets/songs/${song.toLowerCase()}/Inst.$SOUND_EXT';
+		return path;
 	}
 
 	inline static public function image(key:String, ?library:String)
