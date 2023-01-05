@@ -2046,14 +2046,18 @@ class PlayState extends MusicBeatState
 			}
 		});
 
-		if (possibleNotes.length != 0) {
-			for (note in possibleNotes) {
-				if (controlPressArray[note.noteData]) {
-					goodNoteHit(note);
+		if (controlPressArray.contains(true))
+		{
+			if (possibleNotes.length != 0)
+			{
+				for (daNote in possibleNotes)
+				{
+					if (controlPressArray[daNote.noteData] && !daNote.isSustainNote || controlArray[daNote.noteData] && daNote.isSustainNote)
+						goodNoteHit(daNote);
 				}
-				break;
 			}
 		}
+
 		if (boyfriend.holdTimer > Conductor.stepCrochet * 4 * 0.001 && !up && !down && !right && !left)
 		{
 			if (boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss'))
