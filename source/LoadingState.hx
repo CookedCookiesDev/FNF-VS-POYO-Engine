@@ -78,7 +78,7 @@ class LoadingState extends MusicBeatState
 	
 	function checkLoadSong(path:String)
 	{
-		if (!Paths.assetsCache["sounds"].contains(path))
+		if (!Paths.trackedAssets["sounds"].contains(path))
 		{
 			var library = Assets.getLibrary("songs");
 			final symbolPath = path.split(":").pop();

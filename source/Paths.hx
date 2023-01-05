@@ -20,7 +20,7 @@ class Paths
 		"sounds" => []
 	];
 
-	private static var trackedAssets:Map<String, Array<String>> = [
+	public static var trackedAssets:Map<String, Array<String>> = [
 		"graphics" => [],
 		"sounds" => []
 	];
