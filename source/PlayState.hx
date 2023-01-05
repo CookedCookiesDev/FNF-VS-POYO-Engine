@@ -2050,7 +2050,7 @@ class PlayState extends MusicBeatState
 
 		if (possibleNotes.length != 0) {
 			for (i in 0...possibleNotes.length) {
-				var hittableNote = possibleNotes[i]
+				var hittableNote = possibleNotes[i];
 				if (controlPressArray[hittableNote.noteData) {
 					goodNoteHit(hittableNote);
 				}
