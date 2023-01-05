@@ -13,6 +13,7 @@ import lime.utils.Assets as LimeAssets;
 import lime.utils.AssetLibrary;
 import lime.utils.AssetManifest;
 
+import Paths;
 import haxe.io.Path;
 
 class LoadingState extends MusicBeatState
@@ -77,7 +78,7 @@ class LoadingState extends MusicBeatState
 	
 	function checkLoadSong(path:String)
 	{
-		if (!Assets.cache.hasSound(path))
+		if (!Paths.assetsCache["sounds"].contains(path))
 		{
 			var library = Assets.getLibrary("songs");
 			final symbolPath = path.split(":").pop();
@@ -86,7 +87,7 @@ class LoadingState extends MusicBeatState
 			// @:privateAccess
 			// library.pathGroups.set(symbolPath, [library.__cacheBreak(symbolPath)]);
 			var callback = callbacks.add("song:" + path);
-			Assets.loadSound(path).onComplete(function (_) { callback(); });
+			Paths.loadSound(path).onComplete(function (_) { callback(); });
 		}
 	}
 	
