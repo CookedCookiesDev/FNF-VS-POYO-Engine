@@ -315,6 +315,23 @@ class FreeplayState extends MusicBeatState
 			}
 		}
 	}
+
+	override function switchTo(nextState:FlxState):Bool
+	{
+    clearDefines();
+    return super.switchTo(nextState);
+	}
+	
+	function clearDefines()
+	{
+    // Reset Defines //
+    flixel.graphics.FlxGraphic.defaultPersist = false;
+    FlxG.keys.preventDefaultKeys = [];
+    // Handle Refrences //
+    iconArray = []; // Prevents Arrow key input drops;
+    songs = []; // Prevents Arrow key input drops;
+    grpSongs.clear();
+	}
 }
 
 class SongMetadata

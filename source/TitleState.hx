@@ -435,4 +435,22 @@ class TitleState extends MusicBeatState
 			skippedIntro = true;
 		}
 	}
+
+		override function switchTo(nextState:FlxState):Bool
+    {
+        clearDefines();
+        return super.switchTo(nextState);
+    }
+
+    function clearDefines()
+    {
+        // Reset Defines //
+        flixel.graphics.FlxGraphic.defaultPersist = false;
+        FlxG.keys.preventDefaultKeys = [];
+        // Handle Refrences //
+        curWacky = []; // Prevents Arrow key input drops;
+        credGroup.clear();
+        textGroup.clear();
+        //characters.clear(); // yall don't have that :tro:
+    }
 }

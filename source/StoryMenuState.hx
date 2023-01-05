@@ -459,4 +459,26 @@ class StoryMenuState extends MusicBeatState
 		intendedScore = Highscore.getWeekScore(curWeek, curDifficulty);
 		#end
 	}
+
+	override function switchTo(nextState:FlxState):Bool
+  {
+    clearDefines();
+    return super.switchTo(nextState);
+  }
+
+  function clearDefines()
+  {
+    // Reset Defines //
+    flixel.graphics.FlxGraphic.defaultPersist = false;
+    FlxG.keys.preventDefaultKeys = []; // Prevents Arrow key input drops;
+    // Handle Refrences //
+    weekCharacters = [];
+    weekNames = [];
+    weekData = [];
+    weekUnlocked = [];
+    grpLocks.clear();
+    grpWeekCharacters.clear();
+    grpWeekText.clear();
+    //characters.clear(); // yall don't have that :tro:
+	}
 }

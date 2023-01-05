@@ -232,5 +232,23 @@ class OptionsMenu extends MusicBeatState
 		{
 			insubstate = false;
 			super.closeSubState();
-		}	
+		}
+	// Remove refrences that can interfere with GC on switch state //
+    override function switchTo(nextState:FlxState):Bool
+    {
+        clearDefines();
+        return super.switchTo(nextState);
+    }
+
+    function clearDefines()
+    {
+        // Reset Defines //
+        flixel.graphics.FlxGraphic.defaultPersist = false;
+        FlxG.keys.preventDefaultKeys = []; // Prevents Arrow key input drops;
+        // Handle Refrences //
+				menuItems = [];
+				grpControls.clear();
+        //characters.clear(); // yall don't have that :tro:
+    }
+
 }
