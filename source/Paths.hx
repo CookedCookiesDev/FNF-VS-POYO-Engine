@@ -11,6 +11,92 @@ class Paths
 
 	static var currentLevel:String;
 
+	private static var assetsCache:Map<String, Map<String, Any>> = [
+		"graphics" => [],
+		"sounds" => []
+	];
+
+	private static var trackedAssets:Map<String, Array<String>> = [
+		"graphics" => [],
+		"sounds" => []
+	];
+
+	public static function clearAssets(type:String = 'none', cached:Bool = false):Void
+	{
+		if (type == 'graphics')
+		{
+			if (!cached)
+			{
+				@:privateAccess
+				for (key in FlxG.bitmap._cache.keys())
+				{
+					var obj:Null<FlxGraphic> = FlxG.bitmap._cache.get(key);
+					if (obj != null && !assetsCache["graphics"].exists(key))
+					{
+						if (Assets.cache.hasBitmapData(key))
+							Assets.cache.removeBitmapData(key);
+
+						FlxG.bitmap._cache.remove(key);
+						obj = FlxDestroyUtil.destroy(obj);
+					}
+				}
+			}
+			else
+			{
+				@:privateAccess
+				for (key in FlxG.bitmap._cache.keys())
+				{
+					var obj:Null<FlxGraphic> = FlxG.bitmap._cache.get(key);
+					if (obj != null && assetsCache["graphics"].exists(key))
+					{
+						if (Assets.cache.hasBitmapData(key))
+							Assets.cache.removeBitmapData(key);
+
+						FlxG.bitmap._cache.remove(key);
+
+						if (assetsCache["graphics"].exists(key)) // duble check
+							assetsCache["graphics"].remove(key);
+
+						obj = FlxDestroyUtil.destroy(obj);
+					}
+				}
+			}
+		}
+		else if (type == 'sounds')
+		{
+			if (!cached)
+			{
+				for (key in Assets.cache.getSoundKeys())
+				{
+					var obj:Sound = Assets.cache.getSound(key);
+					if (obj != null && !assetsCache["sounds"].exists(key))
+					{
+						Assets.cache.removeSound(key);
+						obj.close();
+					}
+				}
+			}
+			else
+			{
+				for (key in Assets.cache.getSoundKeys())
+				{
+					var obj:Sound = Assets.cache.getSound(key);
+					if (obj != null && assetsCache["sounds"].exists(key))
+					{
+						Assets.cache.removeSound(key);
+						assetsCache["sounds"].remove(key);
+						obj.close();
+					}
+				}
+			}
+		}
+		else if (type == 'none')
+			trace('no assets clearing!');
+
+		if (type == 'graphics' || type == 'sounds')
+			System.gc();
+	}
+
 	static public function setCurrentLevel(name:String)
 	{
 		currentLevel = name.toLowerCase();
@@ -72,7 +158,8 @@ class Paths
 
 	static public function sound(key:String, ?library:String)
 	{
-		return getPath('sounds/$key.$SOUND_EXT', SOUND, library);
+		var path = getPath('sounds/$key.$SOUND_EXT', SOUND, library);
+		return loadSound(path);
 	}
 
 	inline static public function soundRandom(key:String, min:Int, max:Int, ?library:String)
@@ -82,22 +169,26 @@ class Paths
 
 	inline static public function music(key:String, ?library:String)
 	{
-		return getPath('music/$key.$SOUND_EXT', MUSIC, library);
+		var path = getPath('music/$key.$SOUND_EXT', MUSIC, library);
+		return loadSound(path);
 	}
 
 	inline static public function voices(song:String)
 	{
-		return 'songs:assets/songs/${song.toLowerCase()}/Voices.$SOUND_EXT';
+		var path = 'songs:assets/songs/${song.toLowerCase()}/Voices.$SOUND_EXT';
+		return loadSound(path);
 	}
 
 	inline static public function inst(song:String)
 	{
-		return 'songs:assets/songs/${song.toLowerCase()}/Inst.$SOUND_EXT';
+		var path = 'songs:assets/songs/${song.toLowerCase()}/Inst.$SOUND_EXT';
+		return loadSound(path);
 	}
 
 	inline static public function image(key:String, ?library:String)
 	{
-		return getPath('images/$key.png', IMAGE, library);
+		var path = getPath('images/$key.png', IMAGE, library);
+		return loadImage(path);
 	}
 
 	inline static public function font(key:String)
@@ -113,5 +204,64 @@ class Paths
 	inline static public function getPackerAtlas(key:String, ?library:String)
 	{
 		return FlxAtlasFrames.fromSpriteSheetPacker(image(key, library), file('images/$key.txt', library));
+	}
+
+	public static function loadImage(path:String, ?addToCache:Bool = false):Any
+	{
+		if (Assets.exists(path, IMAGE))
+		{
+			if (addToCache && !assetsCache["graphics"].exists(path))
+			{
+				var graphic:FlxGraphic = FlxGraphic.fromBitmapData(#if desktop GPUBitmap.create(path) #else Assets.getBitmapData(path) #end);
+				graphic.persist = true;
+				assetsCache["graphics"].set(path, graphic);
+
+				return assetsCache["graphics"].get(path);
+			}
+			else if (assetsCache["graphics"].exists(path))
+			{
+				trace('$path is already loaded to the cache!');
+				return assetsCache["graphics"].get(path);
+			}
+			else
+			{
+				if (!trackedAssets["graphics"].contains(path))
+					trackedAssets["graphics"].push(path);
+
+				return path;
+			}
+		}
+		else
+			trace('$path is null!');
+
+		return null;
+	}
+
+	public static function loadSound(path:String, ?addToCache:Bool = false):Sound
+	{
+		if (Assets.exists(path, SOUND))
+		{
+			if (addToCache && !assetsCache["sounds"].exists(path))
+			{
+				assetsCache["sounds"].set(path, Assets.getSound(path));
+				return assetsCache["sounds"].get(path);
+			}
+			else if (assetsCache["sounds"].exists(path))
+			{
+				trace('$path is already loaded to the cache!');
+				return assetsCache["sounds"].get(path);
+			}
+			else
+			{
+				if (!trackedAssets["sounds"].contains(path))
+					trackedAssets["sounds"].push(path);
+
+				return Assets.getSound(path);
+			}
+		}
+		else
+			trace('$path is null!');
+
+		return null;
 	}
 }

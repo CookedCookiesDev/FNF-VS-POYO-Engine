@@ -83,6 +83,12 @@ class Main extends Sprite
 		addChild(new FlxGame(1280, 720, initialState, 1, framerate, framerate, skipSplash, startFullscreen));
 		//addChild(new FlxGame(gameWidth, gameHeight, initialState, zoom, framerate, framerate, skipSplash, startFullscreen));
 
+		FlxG.signals.preStateSwitch.add(function()
+		{
+			for (assets in ['graphics', 'sounds'])
+				Paths.clearAssets(assets, true);
+		});
+
 		#if !mobile
 		addChild(new FPS(10, 3, 0xFFFFFF));
 		#end

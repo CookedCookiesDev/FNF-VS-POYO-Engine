@@ -1683,7 +1683,6 @@ class PlayState extends MusicBeatState
 					daNote.y = (strumLine.y - (Conductor.songPosition - daNote.strumTime) * (0.45 * FlxMath.roundDecimal(SONG.speed, 2)));
 				}else {
 					daNote.y = (strumLine.y - (Conductor.songPosition - daNote.strumTime) * (-0.45 * FlxMath.roundDecimal(SONG.speed, 2)));
-
 				}
 				
 				// i am so fucking sorry for this if condition
@@ -2030,22 +2029,8 @@ class PlayState extends MusicBeatState
 		var controlPressArray:Array<Bool> = [leftP, downP, upP, rightP];
 		var controlArray:Array<Bool> = [left, down, up, right];
 
-		var leftArray:Array<Note> = [];
-		var downArray:Array<Note> = [];
-		var upArray:Array<Note> = [];
-		var rightArray:Array<Note> = [];
-
-		var nextNoteArray:Array<Dynamic> =  [leftArray, downArray, upArray, rightArray];
-		//dumb ik
-
 		notes.forEachAlive(function(daNote:Note)
 		{
-			nextNoteArray[daNote.noteData].push(daNote);
-			nextNoteArray[daNote.noteData].sort((a, b) -> Std.int(a.strumTime - b.strumTime));
-
-			var nextNote = nextNoteArray[daNote.noteData][0];
-			var dumbNote = nextNoteArray[daNote.noteData][1];
-
 			switch(daNote.isSustainNote)
 			{
 				case false:
