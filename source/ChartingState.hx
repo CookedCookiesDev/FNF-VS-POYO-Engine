@@ -1077,7 +1077,7 @@ class ChartingState extends MusicBeatState
 
 		var data:String = Json.stringify(json);
 
-		SUtil.saveContent(PlayState.SONG, 'json', data.trim());
+		SUtil.saveContent(song.toLowerCase(), 'json', data.trim());
 
 		if ((data != null) && (data.length > 0))
 		{
