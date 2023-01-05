@@ -2040,7 +2040,7 @@ class PlayState extends MusicBeatState
 			}
 			var nextNote:Note = possibleNotes[0];
 			var nextNextNote:Note = possibleNotes[1];
-			if (nextNote.strumTime ~= nextNextNote.strumTime) {
+			if (nextNote.strumTime != nextNextNote.strumTime) {
 				switch(daNote.isSustainNote)
 				{
 					case false:
@@ -2051,7 +2051,7 @@ class PlayState extends MusicBeatState
 							goodNoteHit(daNote);
 				}
 			} else {
-				if (nextNote.noteData ~= nextNextNote.noteData) {
+				if (nextNote.noteData != nextNextNote.noteData) {
 					switch(nextNote.isSustainNote) {
 						case false:
 							if (controlPressArray[nextNote.noteData] && nextNote.canBeHit)
@@ -2071,9 +2071,10 @@ class PlayState extends MusicBeatState
 				} else {
 					switch(nextNote.isSustainNote) {
 						case false:
-							if (controlPressArray[nextNote.noteData] && nextNote.canBeHit)
+							if (controlPressArray[nextNote.noteData] && nextNote.canBeHit) {
 								goodNoteHit(nextNote);
 								goodNoteHit(nextNextNote, false);
+							}
 						case true:
 							if (controlArray[nextNote.noteData] && nextNote.canBeHit)
 								goodNoteHit(nextNote);
