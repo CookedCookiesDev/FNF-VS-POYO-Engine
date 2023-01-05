@@ -1680,9 +1680,15 @@ class PlayState extends MusicBeatState
 				}
 
 				if (!FlxG.save.data.downscroll) {
-					daNote.y = (strumLine.y - (Conductor.songPosition - daNote.strumTime) * (0.45 * FlxMath.roundDecimal(SONG.speed, 2)));
-				}else {
-					daNote.y = (strumLine.y - (Conductor.songPosition - daNote.strumTime) * (-0.45 * FlxMath.roundDecimal(SONG.speed, 2)));
+					if (daNote.mustPress)
+						daNote.y = (playerStrums.members[Math.floor(Math.abs(daNote.noteData))].y - 0.45 * (Conductor.songPosition - daNote.strumTime) * FlxMath.roundDecimal(PlayStateChangeables.scrollSpeed == 1 ? SONG.speed : PlayStateChangeables.scrollSpeed, 2));
+					else
+						daNote.y = (strumLineNotes.members[Math.floor(Math.abs(daNote.noteData))].y - 0.45 * (Conductor.songPosition - daNote.strumTime) * FlxMath.roundDecimal(PlayStateChangeables.scrollSpeed == 1 ? SONG.speed : PlayStateChangeables.scrollSpeed, 2));
+				} else {
+					if (daNote.mustPress)
+						daNote.y = (playerStrums.members[Math.floor(Math.abs(daNote.noteData))].y + 0.45 * (Conductor.songPosition - daNote.strumTime) * FlxMath.roundDecimal(PlayStateChangeables.scrollSpeed == 1 ? SONG.speed : PlayStateChangeables.scrollSpeed, 2));
+					else
+						daNote.y = (strumLineNotes.members[Math.floor(Math.abs(daNote.noteData))].y + 0.45 * (Conductor.songPosition - daNote.strumTime) * FlxMath.roundDecimal(PlayStateChangeables.scrollSpeed == 1 ? SONG.speed : PlayStateChangeables.scrollSpeed, 2));
 				}
 				
 				// i am so fucking sorry for this if condition
@@ -2032,17 +2038,25 @@ class PlayState extends MusicBeatState
 
 		notes.forEachAlive(function(daNote:Note)
 		{
-			switch(daNote.isSustainNote)
+			if (daNote.canBeHit && daNote.mustPress && !daNote.tooLate)
 			{
-				case false:
-					if (controlPressArray[daNote.noteData] && daNote.canBeHit)
-						goodNoteHit(daNote);
-				case true:
-					if (controlArray[daNote.noteData] && daNote.canBeHit)
-						goodNoteHit(daNote);
+				// the sorting probably doesn't need to be in here? who cares lol
+				possibleNotes.push(daNote);
+				possibleNotes.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
+		
+				ignoreList.push(daNote.noteData);
 			}
 		});
 
+		if (possibleNotes.length != 0) {
+			for (i in 0...possibleNotes.length) {
+				var hittableNote = possibleNotes[i]
+				if (controlPressArray[hittableNote.noteData) {
+					goodNoteHit(hittableNote);
+				}
+				break;
+			}
+		}
 		if (boyfriend.holdTimer > Conductor.stepCrochet * 4 * 0.001 && !up && !down && !right && !left)
 		{
 			if (boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss'))
@@ -2437,12 +2451,9 @@ class PlayState extends MusicBeatState
 	  FlxG.keys.preventDefaultKeys = []; // Prevents Arrow key input drops;
 	  // Handle Refrences //
 	  unspawnNotes = [];
-	  storyPlaylist = [];
 	  notes.clear();
 	  strumLineNotes.clear();
 	  playerStrums.clear();
-	  grpLimoDancers.clear();
-	  phillyCityLights.clear();
 	  //characters.clear(); // yall don't have that :tro:
 	}
 	var curLight:Int = 0;
