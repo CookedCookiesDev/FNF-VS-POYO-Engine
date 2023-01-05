@@ -177,10 +177,14 @@ class Paths
 		return loadSound(path);
 	}
 
-	inline static public function voices(song:String)
+	inline static public function voices(song:String, ?returnString:Bool = false)
 	{
-		var path = 'songs:assets/songs/${song.toLowerCase()}/Voices.$SOUND_EXT';
-		return loadSound(path);
+		if (!returnString) {
+			var path = 'songs:assets/songs/${song.toLowerCase()}/Voices.$SOUND_EXT';
+			return loadSound(path);
+		} else {
+			return 'songs:assets/songs/${song.toLowerCase()}/Voices.$SOUND_EXT';
+		}
 	}
 
 	inline static public function inst(song:String)
