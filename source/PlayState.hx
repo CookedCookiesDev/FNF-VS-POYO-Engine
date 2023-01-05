@@ -2046,7 +2046,7 @@ class PlayState extends MusicBeatState
 			}
 		});
 
-		if (controlPressArray.contains(true))
+		if (controlPressArray.contains(true) || controlArray.contains(true))
 		{
 			if (possibleNotes.length != 0)
 			{

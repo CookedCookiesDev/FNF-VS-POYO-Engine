@@ -1077,7 +1077,7 @@ class ChartingState extends MusicBeatState
 
 		var data:String = Json.stringify(json);
 
-		openfl.system.System.setClipboard(data.trim());
+		SUtil.saveContent(PlayState.SONG, 'json', data.trim());
 
 		if ((data != null) && (data.length > 0))
 		{

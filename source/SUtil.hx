@@ -71,7 +71,7 @@ class SUtil
 				/**
 				 * Basically for now i can't force the app to stop while its requesting a android permission, so this makes the app to stop while its requesting the specific permission
 				 */
-				Lib.application.window.alert('If you accepted the permissions you are all good!' + "\nIf you didn't then expect a crash"
+				Lib.application.window.alert('If you accepted the permissions you can get crashlogs!' + "\nIf you didn't then that's fine"
 					+ '\nPress Ok to see what happens',
 					'Permissions?');
 			}
@@ -79,52 +79,6 @@ class SUtil
 			{
 				Lib.application.window.alert('Please grant the game storage permissions in app settings' + '\nPress Ok to close the app', 'Permissions?');
 				LimeSystem.exit(1);
-			}
-		}
-
-		if (Permissions.getGrantedPermissions().contains(Permissions.WRITE_EXTERNAL_STORAGE)
-			&& Permissions.getGrantedPermissions().contains(Permissions.READ_EXTERNAL_STORAGE))
-		{
-			if (!FileSystem.exists(SUtil.getStorageDirectory() + 'assets') && !FileSystem.exists(SUtil.getStorageDirectory() + 'mods'))
-			{
-				Lib.application.window.alert("Whoops, seems like you didn't extract the files from the .APK!\nPlease copy the files from the .APK to\n" + SUtil.getStorageDirectory(),
-					'Error!');
-				LimeSystem.exit(1);
-			}
-			else if ((FileSystem.exists(SUtil.getStorageDirectory() + 'assets') && !FileSystem.isDirectory(SUtil.getStorageDirectory() + 'assets'))
-				&& (FileSystem.exists(SUtil.getStorageDirectory() + 'mods') && !FileSystem.isDirectory(SUtil.getStorageDirectory() + 'mods')))
-			{
-				Lib.application.window.alert("Why did you create two files called assets and mods instead of copying the folders from the .APK?, expect a crash.",
-					'Error!');
-				LimeSystem.exit(1);
-			}
-			else
-			{
-				if (!FileSystem.exists(SUtil.getStorageDirectory() + 'assets'))
-				{
-					Lib.application.window.alert("Whoops, seems like you didn't extract the assets/assets folder from the .APK!\nPlease copy the assets/assets folder from the .APK to\n" + SUtil.getStorageDirectory(),
-						'Error!');
-					LimeSystem.exit(1);
-				}
-				else if (FileSystem.exists(SUtil.getStorageDirectory() + 'assets') && !FileSystem.isDirectory(SUtil.getStorageDirectory() + 'assets'))
-				{
-					Lib.application.window.alert("Why did you create a file called assets instead of copying the assets directory from the .APK?, expect a crash.",
-						'Error!');
-					LimeSystem.exit(1);
-				}
-
-				if (!FileSystem.exists(SUtil.getStorageDirectory() + 'mods'))
-				{
-					Lib.application.window.alert("Whoops, seems like you didn't extract the assets/mods folder from the .APK!\nPlease copy the assets/mods folder from the .APK to\n" + SUtil.getStorageDirectory(),
-						'Error!');
-					LimeSystem.exit(1);
-				}
-				else if (FileSystem.exists(SUtil.getStorageDirectory() + 'mods') && !FileSystem.isDirectory(SUtil.getStorageDirectory() + 'mods'))
-				{
-					Lib.application.window.alert("Why did you create a file called mods instead of copying the mods directory from the .APK?, expect a crash.",
-						'Error!');
-					LimeSystem.exit(1);
-				}
 			}
 		}
 		#end
@@ -241,7 +195,7 @@ class SUtil
 
 			File.saveContent(SUtil.getStorageDirectory() + 'saves/' + fileName + fileExtension, fileData);
 			#if android
-			Toast.makeText("File Saved Successfully!", Toast.LENGTH_LONG);
+			Toast.makeText("File saved in " + SUtil.getStorageDirectory() + 'saves', Toast.LENGTH_LONG);
 			#end
 		}
 		catch (e:Dynamic)
