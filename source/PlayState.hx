@@ -2034,11 +2034,11 @@ class PlayState extends MusicBeatState
 			switch(daNote.isSustainNote)
 			{
 				case false:
-					if (controlPressArray[nextNote.noteData] && nextNote.canBeHit)
-						goodNoteHit(nextNote);
+					if (controlPressArray[daNote.noteData] && daNote.canBeHit)
+						goodNoteHit(daNote);
 				case true:
-					if (controlArray[nextNote.noteData] && nextNote.canBeHit)
-						goodNoteHit(nextNote);
+					if (controlArray[daNote.noteData] && daNote.canBeHit)
+						goodNoteHit(daNote);
 			}
 		});
 
