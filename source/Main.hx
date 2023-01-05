@@ -10,6 +10,7 @@ import openfl.display.Sprite;
 import openfl.events.Event;
 import flixel.util.FlxSave;
 import flixel.math.FlxPoint;
+import com.kircode.debug.FPS_Mem;
 
 class Main extends Sprite
 {	
