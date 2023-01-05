@@ -34,6 +34,9 @@ class Paths
 				@:privateAccess
 				for (key in FlxG.bitmap._cache.keys())
 				{
+					#if desktop
+					GPUBitmap.dispose(KEY(key));
+					#end
 					var obj:Null<FlxGraphic> = FlxG.bitmap._cache.get(key);
 					if (obj != null && !assetsCache["graphics"].exists(key))
 					{
