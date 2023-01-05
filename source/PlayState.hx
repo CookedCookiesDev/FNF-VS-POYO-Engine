@@ -2032,54 +2032,14 @@ class PlayState extends MusicBeatState
 
 		notes.forEachAlive(function(daNote:Note)
 		{
-			if (daNote.canBeHit && daNote.mustPress && !daNote.tooLate)
+			switch(daNote.isSustainNote)
 			{
-				// the sorting probably doesn't need to be in here? who cares lol
-				possibleNotes.push(daNote);
-				possibleNotes.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
-			}
-			var nextNote:Note = possibleNotes[0];
-			var nextNextNote:Note = possibleNotes[1];
-			if (nextNote.strumTime != nextNextNote.strumTime) {
-				switch(daNote.isSustainNote)
-				{
-					case false:
-						if (controlPressArray[daNote.noteData] && daNote.canBeHit)
-							goodNoteHit(daNote);
-					case true:
-						if (controlArray[daNote.noteData] && daNote.canBeHit)
-							goodNoteHit(daNote);
-				}
-			} else {
-				if (nextNote.noteData != nextNextNote.noteData) {
-					switch(nextNote.isSustainNote) {
-						case false:
-							if (controlPressArray[nextNote.noteData] && nextNote.canBeHit)
-								goodNoteHit(nextNote);
-						case true:
-							if (controlArray[nextNote.noteData] && nextNote.canBeHit)
-								goodNoteHit(nextNote);
-					}
-					switch(nextNextNote.isSustainNote) {
-						case false:
-							if (controlPressArray[nextNextNote.noteData] && nextNextNote.canBeHit)
-								goodNoteHit(nextNextNote);
-						case true:
-							if (controlArray[nextNextNote.noteData] && nextNextNote.canBeHit)
-								goodNoteHit(nextNextNote);
-					}
-				} else {
-					switch(nextNote.isSustainNote) {
-						case false:
-							if (controlPressArray[nextNote.noteData] && nextNote.canBeHit) {
-								goodNoteHit(nextNote);
-								goodNoteHit(nextNextNote, false);
-							}
-						case true:
-							if (controlArray[nextNote.noteData] && nextNote.canBeHit)
-								goodNoteHit(nextNote);
-					}
-				}
+				case false:
+					if (controlPressArray[daNote.noteData] && daNote.canBeHit)
+						goodNoteHit(daNote);
+				case true:
+					if (controlArray[daNote.noteData] && daNote.canBeHit)
+						goodNoteHit(daNote);
 			}
 		});
 
