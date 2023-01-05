@@ -2062,10 +2062,10 @@ class PlayState extends MusicBeatState
 					}
 					switch(nextNextNote.isSustainNote) {
 						case false:
-							if (controlPressArray[nextNext.noteData] && nextNextNote.canBeHit)
+							if (controlPressArray[nextNextNote.noteData] && nextNextNote.canBeHit)
 								goodNoteHit(nextNextNote);
 						case true:
-							if (controlArray[nextNote.noteData] && nextNote.canBeHit)
+							if (controlArray[nextNextNote.noteData] && nextNextNote.canBeHit)
 								goodNoteHit(nextNextNote);
 					}
 				} else {
