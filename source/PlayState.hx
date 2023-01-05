@@ -1135,6 +1135,8 @@ class PlayState extends MusicBeatState
 					unspawnNotes.push(sustainNote);
 
 					sustainNote.mustPress = gottaHitNote;
+					if (FlxG.save.data.middlescroll)
+						sustainNote.alpha = 0;
 
 					if (sustainNote.mustPress)
 					{
