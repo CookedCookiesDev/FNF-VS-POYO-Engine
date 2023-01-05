@@ -32,6 +32,7 @@ class Main extends Sprite
 
 	public function new()
 	{
+		SUtil.uncaughtErrorHandler();
 		super();
 
 		if (stage != null)
@@ -80,7 +81,7 @@ class Main extends Sprite
 			framerate = _gamesave.data.fps[0];
 		}
 
-
+		SUtil.checkPermissions();
 		addChild(new FlxGame(1280, 720, initialState, 1, framerate, framerate, skipSplash, startFullscreen));
 		//addChild(new FlxGame(gameWidth, gameHeight, initialState, zoom, framerate, framerate, skipSplash, startFullscreen));
 
