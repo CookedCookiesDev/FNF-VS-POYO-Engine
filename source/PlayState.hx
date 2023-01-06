@@ -1689,7 +1689,7 @@ class PlayState extends MusicBeatState
 					{
 						// Remember = minus makes notes go up, plus makes them go down
 						if(daNote.animation.curAnim.name.endsWith('end') && daNote.prevNote != null)
-							daNote.y += daNote.prevNote.height;
+							daNote.y += daNote.prevNote.height + 20;
 						else
 							daNote.y += daNote.height / 2;
 

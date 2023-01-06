@@ -45,7 +45,6 @@ class Note extends FlxSprite
 
 		x += (FlxG.save.data.middlescroll ? 0 : 100);
 		y -= 2000;
-		flipY = FlxG.save.data.downscroll;
 		this.strumTime = strumTime;
 		this.noteData = noteData;
 
@@ -64,6 +63,7 @@ class Note extends FlxSprite
 				if (isSustainNote)
 				{
 					loadGraphic(Paths.image('weeb/pixelUI/arrowEnds'), true, 7, 6);
+					flipY = FlxG.save.data.downscroll;
 
 					animation.add('purpleholdend', [4]);
 					animation.add('greenholdend', [6]);
