@@ -14,8 +14,6 @@ class Mobilecontrols extends FlxSpriteGroup
     public var hitboxisenabled:Bool = false;
 	public var keyboardisenabled:Bool = false;
 
-	public var downscroll_isenabled:Bool = false;
-
     var _pad:FlxVirtualPad;
 	var _hitbox:Hitbox;
 
@@ -47,34 +45,16 @@ class Mobilecontrols extends FlxSpriteGroup
 	// now controls here
     public function new()
     {
-        super();
+       super();
 
-		// load control mode num from Config.hx
-		controlmode = config.getcontrolmode();
-
-
-		//controlmode
-		switch controlmode{
-			case 1: //left default
-				_pad = new FlxVirtualPad(FULL, NONE);
-				_pad.alpha = 0.75;
-				this.add(_pad);
-			case 2:
-				keyboardisenabled = true;
-			case 3: //custom
-				_pad = new FlxVirtualPad(RIGHT_FULL, NONE);
-				_pad.alpha = 0.75;
-				this.add(_pad);
-				_pad = config.loadcustom(_pad);
-			case 4:
-				_hitbox = new Hitbox();
-				hitboxisenabled = true;
-				add(_hitbox);
-			default: //default (0)
-				_pad = new FlxVirtualPad(RIGHT_FULL, NONE);
-				_pad.alpha = 0.75;
-				this.add(_pad);
-		}
+			// load control mode num from Config.hx
+			controlmode = config.getcontrolmode();
+	
+	
+			//controlmode
+			_hitbox = new Hitbox();
+			hitboxisenabled = true;
+			add(_hitbox);
     }
 
 	override public function update(elapsed:Float) {
