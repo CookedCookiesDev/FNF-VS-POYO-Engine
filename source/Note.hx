@@ -44,10 +44,9 @@ class Note extends FlxSprite
 		isSustainNote = sustainNote;
 
 		x += (FlxG.save.data.middlescroll ? 0 : 100);
-		// MAKE SURE ITS DEFINITELY OFF SCREEN?
 		y -= 2000;
+		flipY = FlxG.save.data.downscroll;
 		this.strumTime = strumTime;
-
 		this.noteData = noteData;
 
 		var daStage:String = PlayState.curStage;
