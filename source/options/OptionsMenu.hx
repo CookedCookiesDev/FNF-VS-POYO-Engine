@@ -30,7 +30,6 @@ class OptionsMenu extends MusicBeatState
 	private var grpControls:FlxTypedGroup<Alphabet>;
 
 	var menuItems:Array<String> = [
-		'controls',
 		'downscroll',
 		'middlescroll',
 		'set fps',
@@ -118,8 +117,6 @@ class OptionsMenu extends MusicBeatState
 		{
 			switch (daSelected)
 			{
-				case "controls":
-					FlxG.switchState(new options.CustomControlsState());
 				case "config":
 					trace("hello");
 				case "downscroll":
