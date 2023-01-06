@@ -561,7 +561,7 @@ class ChartingState extends MusicBeatState
 				&& touch.y > gridBG.y
 				&& touch.y < gridBG.y + (GRID_SIZE * _song.notes[curSection].lengthInSteps))
 			{
-				var divideNote:Int = GRID_SIZE / GRID_DIVIDE;
+				var divideNote:Int = Std.int(GRID_SIZE / GRID_DIVIDE);
 				dummyArrow.x = Math.floor(touch.x / GRID_SIZE) * GRID_SIZE;
 				if (key_shift.pressed) //FlxG.keys.pressed.SHIFT
 					dummyArrow.y = touch.y;
