@@ -167,7 +167,7 @@ class ChartingState extends MusicBeatState
 
 		UI_box = new FlxUITabMenu(null, tabs, true);
 
-		UI_box.resize(300, 400);
+		UI_box.resize(400, 500);
 		UI_box.x = FlxG.width / 2;
 		UI_box.y = 20;
 		add(UI_box);
@@ -712,7 +712,13 @@ class ChartingState extends MusicBeatState
 			+ " / "
 			+ Std.string(FlxMath.roundDecimal(FlxG.sound.music.length / 1000, 2))
 			+ "\nSection: "
-			+ curSection;
+			+ curSection
+			+ "\ncurStep: "
+			+ curStep
+			+ "\curBeat: "
+			+ curBeat
+			+ "\Note Snap: "
+			+ GRID_DIVIDE + '/1';
 		super.update(elapsed);
 	}
 

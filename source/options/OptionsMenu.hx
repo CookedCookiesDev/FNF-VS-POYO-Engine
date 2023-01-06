@@ -63,7 +63,7 @@ class OptionsMenu extends MusicBeatState
 		saveTxt = new FlxText(0, 0, FlxG.width, '', 64);
 		saveTxt.alignment = FlxTextAlign.RIGHT;
 		saveTxt.screenCenter();
-		saveTxt.x += 10;
+		saveTxt.x -= 100;
 		add(saveTxt);
 
 		grpControls = new FlxTypedGroup<Alphabet>();
