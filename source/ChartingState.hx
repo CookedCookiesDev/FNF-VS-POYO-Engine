@@ -715,9 +715,9 @@ class ChartingState extends MusicBeatState
 			+ curSection
 			+ "\ncurStep: "
 			+ curStep
-			+ "\curBeat: "
+			+ "\ncurBeat: "
 			+ curBeat
-			+ "\Note Snap: "
+			+ "\nNote Snap: "
 			+ GRID_DIVIDE + '/1';
 		super.update(elapsed);
 	}
