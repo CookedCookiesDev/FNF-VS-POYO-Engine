@@ -61,7 +61,7 @@ class ChartingState extends MusicBeatState
 	var highlight:FlxSprite;
 
 	var GRID_SIZE:Int = 40;
-	var GRID_DIVIDE:Int = 2;
+	var GRID_DIVIDE:Int = 1;
 
 	var dummyArrow:FlxSprite;
 
@@ -296,9 +296,14 @@ class ChartingState extends MusicBeatState
 		var tab_group_section = new FlxUI(null, UI_box);
 		tab_group_section.name = 'Section';
 
-		if (_pad.buttonA.justPressed)
-			
-
+		if (_pad.buttonA.justPressed) {
+			if (GRID_DIVIDE == 1)
+				GRID_DIVIDE = 2;
+			else if (GRID_DIVIDE == 2)
+				GRID_DIVIDE = 4;
+			else
+				GRID_DIVIDE = 1;
+		}
 		stepperLength = new FlxUINumericStepper(10, 10, 4, 0, 0, 999, 0);
 		stepperLength.value = _song.notes[curSection].lengthInSteps;
 		stepperLength.name = "section_length";
