@@ -61,6 +61,7 @@ class ChartingState extends MusicBeatState
 	var highlight:FlxSprite;
 
 	var GRID_SIZE:Int = 40;
+	var GRID_DIVIDE:Int = 2;
 
 	var dummyArrow:FlxSprite;
 
@@ -190,7 +191,7 @@ class ChartingState extends MusicBeatState
         key_shift.alpha = 0.75;
         add(key_shift);
 
-		_pad = new FlxVirtualPad(RIGHT_FULL, NONE);
+		_pad = new FlxVirtualPad(RIGHT_FULL, A);
     	_pad.alpha = 0.75;
     	this.add(_pad);
 
@@ -294,6 +295,9 @@ class ChartingState extends MusicBeatState
 	{
 		var tab_group_section = new FlxUI(null, UI_box);
 		tab_group_section.name = 'Section';
+
+		if (_pad.buttonA.justPressed)
+			
 
 		stepperLength = new FlxUINumericStepper(10, 10, 4, 0, 0, 999, 0);
 		stepperLength.value = _song.notes[curSection].lengthInSteps;
@@ -557,11 +561,12 @@ class ChartingState extends MusicBeatState
 				&& touch.y > gridBG.y
 				&& touch.y < gridBG.y + (GRID_SIZE * _song.notes[curSection].lengthInSteps))
 			{
+				var divideNote:Int = GRID_SIZE / GRID_DIVIDE;
 				dummyArrow.x = Math.floor(touch.x / GRID_SIZE) * GRID_SIZE;
 				if (key_shift.pressed) //FlxG.keys.pressed.SHIFT
 					dummyArrow.y = touch.y;
 				else
-					dummyArrow.y = Math.floor(touch.y / GRID_SIZE) * GRID_SIZE;
+					dummyArrow.y = Math.floor(touch.y / divideNote) * divideNote;
 			}
 
 		}
