@@ -225,7 +225,7 @@ class Paths
 		return FlxAtlasFrames.fromSpriteSheetPacker(image(key, library), file('images/$key.txt', library));
 	}
 
-	public static function loadImage(path:String, ?addToCache:Bool = false):Any
+	public static function loadImage(path:String, ?addToCache:Bool = true):Any
 	{
 		if (Assets.exists(path, IMAGE))
 		{
@@ -256,7 +256,7 @@ class Paths
 		return null;
 	}
 
-	public static function loadSound(path:String, ?addToCache:Bool = false):Sound
+	public static function loadSound(path:String, ?addToCache:Bool = true):Sound
 	{
 		if (Assets.exists(path, SOUND))
 		{

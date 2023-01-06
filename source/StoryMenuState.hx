@@ -241,6 +241,7 @@ class StoryMenuState extends MusicBeatState
 			lock.y = grpWeekText.members[lock.ID].y;
 		});
 
+		#if mobile
 		var UP_P = _pad.buttonUp.justPressed;
 		var RIGHT_P = _pad.buttonRight.justPressed;
 		var DOWN_P = _pad.buttonDown.justPressed;
@@ -250,12 +251,18 @@ class StoryMenuState extends MusicBeatState
 		var LEFT = _pad.buttonLeft.pressed;
 
 		var ACCEPT = _pad.buttonA.justPressed;
-		var BACK = _pad.buttonB.justPressed;
-
-		#if android
-			var BACK = _pad.buttonB.justPressed || FlxG.android.justReleased.BACK;
+		var BACK = _pad.buttonB.justPressed || FlxG.android.justReleased.BACK;
 		#else
-			var BACK = _pad.buttonB.justPressed;
+		var UP_P = controls.UP_P;
+		var RIGHT_P = controls.RIGHT_P;
+		var DOWN_P = controls.DOWN_P;
+		var LEFT_P = controls.LEFT_P;
+		
+		var RIGHT = controls.RIGHT;
+		var LEFT = controls.LEFT;
+
+		var ACCEPT = controls.ACCEPT;
+		var BACK = controls.BACK;
 		#end
 
 		if (!movedBack)

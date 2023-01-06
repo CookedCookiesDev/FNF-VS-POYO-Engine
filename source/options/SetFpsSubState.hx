@@ -70,10 +70,17 @@ class SetFpsSubState extends MusicBeatSubstate
 		var downP = controls.DOWN_P;
 		var accepted = controls.ACCEPT;
 		*/
+		#if mobile
 		var UP_P = _pad.buttonUp.justReleased;
 		var DOWN_P = _pad.buttonDown.justReleased;
 		var BACK = _pad.buttonB.justReleased;
 		var ACCEPT = _pad.buttonA.justReleased;
+		#else
+		var UP_P = controls.UP_P;
+		var DOWN_P = controls.DOWN_P;
+		var BACK = controls.BACK;
+		var ACCEPT = controls.ACCEPT;
+		#end
 
         #if android
 			var BACK = _pad.buttonB.justPressed || FlxG.android.justReleased.BACK;

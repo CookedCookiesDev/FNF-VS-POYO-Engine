@@ -197,16 +197,20 @@ class FreeplayState extends MusicBeatState
 		var downP = controls.DOWN_P;
 		var accepted = controls.ACCEPT;
 		*/
-
+		#if mobile
 		var upP = _pad.buttonUp.justPressed;
 		var downP = _pad.buttonDown.justPressed;
 		var LEFT_P = _pad.buttonLeft.justPressed;
 		var RIGHT_P = _pad.buttonRight.justPressed;
 		var accepted = _pad.buttonA.justPressed;
-		#if android
-			var BACK = _pad.buttonB.justPressed || FlxG.android.justReleased.BACK;
+		var BACK = _pad.buttonB.justPressed || FlxG.android.justReleased.BACK;
 		#else
-			var BACK = _pad.buttonB.justPressed;
+		var upP = controls.UP_P;
+		var downP = controls.DOWN_P;
+		var LEFT_P = controls.LEFT_P;
+		var RIGHT_P = controls.RIGHT_P;
+		var accepted = controls.ACCEPT;
+		var BACK = controls.BACK;
 		#end
 
 		if (upP)

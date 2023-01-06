@@ -101,16 +101,17 @@ class OptionsMenu extends MusicBeatState
 		}
 
 		if (!insubstate){
+			#if mobile
 			UP_P = _pad.buttonUp.justReleased;
 			DOWN_P = _pad.buttonDown.justReleased;
-
-			#if android
 			BACK = _pad.buttonB.justPressed || FlxG.android.justReleased.BACK;
-			#else
-			BACK = _pad.buttonB.justPressed;
-			#end
-			
 			ACCEPT = _pad.buttonA.justReleased;
+			#else
+			UP_P = controls.UP_P;
+			DOWN_P = controls.DOWN_P;
+			ACCEPT = controls.ACCEPT;
+			BACK = controls.BACK;
+			#end
 		}
 		
 		if (ACCEPT)
