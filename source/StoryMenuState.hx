@@ -13,7 +13,9 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import lime.net.curl.CURLCode;
+#if mobile
 import ui.FlxVirtualPad;
+#end
 
 using StringTools;
 
@@ -70,7 +72,9 @@ class StoryMenuState extends MusicBeatState
 	var leftArrow:FlxSprite;
 	var rightArrow:FlxSprite;
 
+	#if mobile
 	var _pad:FlxVirtualPad;
+	#end
 
 	override function create()
 	{
@@ -215,9 +219,11 @@ class StoryMenuState extends MusicBeatState
 
 		trace("Line 165");
 
+		#if mobile
 		_pad = new FlxVirtualPad(FULL, A_B);
     	_pad.alpha = 0.75;
     	this.add(_pad);
+        #end
 
 		super.create();
 	}

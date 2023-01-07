@@ -6,7 +6,9 @@ import flixel.FlxSubState;
 import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
+#if mobile
 import ui.FlxVirtualPad;
+#end
 
 class GameOverSubstate extends MusicBeatSubstate
 {
@@ -15,8 +17,9 @@ class GameOverSubstate extends MusicBeatSubstate
 
 	var stageSuffix:String = "";
 
+	#if mobile
 	var _pad:FlxVirtualPad;
-
+    #end
 	public function new(x:Float, y:Float)
 	{
 		var daStage = PlayState.curStage;
@@ -53,9 +56,11 @@ class GameOverSubstate extends MusicBeatSubstate
 
 		bf.playAnim('firstDeath');
 
+		#if mobile
 		_pad = new FlxVirtualPad(NONE, A_B);
     	_pad.alpha = 0.75;
     	this.add(_pad);
+		#end
 	}
 
 	override function update(elapsed:Float)

@@ -33,7 +33,9 @@ import openfl.events.IOErrorEvent;
 import openfl.media.Sound;
 import openfl.net.FileReference;
 import openfl.utils.ByteArray;
+#if mobile
 import ui.FlxVirtualPad;
+#end
 
 using StringTools;
 
@@ -89,7 +91,9 @@ class ChartingState extends MusicBeatState
 	var key_space:FlxButton;
 	var key_shift:FlxButton;
 
+	#if mobile
 	var _pad:FlxVirtualPad;
+	#end
 
 	override function create()
 	{
@@ -191,9 +195,11 @@ class ChartingState extends MusicBeatState
         key_shift.alpha = 0.75;
         add(key_shift);
 
+		#if mobile
 		_pad = new FlxVirtualPad(RIGHT_FULL, A);
     	_pad.alpha = 0.75;
     	this.add(_pad);
+		#end
 
 		super.create();
 	}

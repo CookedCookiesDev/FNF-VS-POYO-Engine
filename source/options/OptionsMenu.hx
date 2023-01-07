@@ -12,7 +12,9 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
+#if mobile
 import ui.FlxVirtualPad;
+#end
 import Config;
 import WebViewVideo;
 
@@ -36,7 +38,9 @@ class OptionsMenu extends MusicBeatState
 		'About'
 	];
 
+	#if mobile
 	var _pad:FlxVirtualPad;
+	#end
 	var saveTxt:FlxText;
 
 	var UP_P:Bool;
@@ -77,9 +81,11 @@ class OptionsMenu extends MusicBeatState
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
 		}
 
+		#if mobile
 		_pad = new FlxVirtualPad(UP_DOWN, A_B);
 		_pad.alpha = 0.75;
 		this.add(_pad);
+		#end
 		
 		super.create();
 	}

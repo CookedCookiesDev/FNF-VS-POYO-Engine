@@ -10,7 +10,9 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
+#if mobile
 import ui.FlxVirtualPad;
+#end
 
 using StringTools;
 
@@ -32,7 +34,9 @@ class FreeplayState extends MusicBeatState
 
 	private var iconArray:Array<HealthIcon> = [];
 
+	#if mobile
 	var _pad:FlxVirtualPad;
+	#end
 
 	override function create()
 	{
@@ -149,9 +153,11 @@ class FreeplayState extends MusicBeatState
 			trace(md);
 		 */
 		
+		#if mobile
 		_pad = new FlxVirtualPad(FULL, A_B);
 		_pad.alpha = 0.65;
 		this.add(_pad);
+		#end
  
 		super.create();
 	}

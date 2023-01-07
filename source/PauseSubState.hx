@@ -12,7 +12,9 @@ import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
+#if mobile
 import ui.FlxVirtualPad;
+#end
 
 class PauseSubState extends MusicBeatSubstate
 {
@@ -23,7 +25,9 @@ class PauseSubState extends MusicBeatSubstate
 
 	var pauseMusic:FlxSound;
 
+	#if mobile
 	var _pad:FlxVirtualPad;
+    #end
 
 	public function new(x:Float, y:Float)
 	{
@@ -79,10 +83,12 @@ class PauseSubState extends MusicBeatSubstate
 
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 
+		#if mobile
 		_pad = new FlxVirtualPad(UP_DOWN, A);
     	_pad.alpha = 0.75;
     	this.add(_pad);
 		_pad.cameras = cameras;
+		#end
 	}
 
 	override function update(elapsed:Float)

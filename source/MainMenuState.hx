@@ -14,7 +14,9 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 //import io.newgrounds.NG;
 import lime.app.Application;
+#if mobile
 import ui.FlxVirtualPad;
+#end
 
 using StringTools;
 
@@ -33,7 +35,9 @@ class MainMenuState extends MusicBeatState
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;
 
+	#if mobile
 	var _pad:FlxVirtualPad;
+	#end
 
 	override function create()
 	{
@@ -104,9 +108,11 @@ class MainMenuState extends MusicBeatState
 
 		changeItem();
 
+		#if mobile
 		_pad = new FlxVirtualPad(UP_DOWN, A_B);
 		_pad.alpha = 0.75;
 		this.add(_pad);
+		#end
 
 		super.create();
 	}

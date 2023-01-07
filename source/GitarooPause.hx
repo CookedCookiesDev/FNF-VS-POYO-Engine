@@ -12,7 +12,9 @@ class GitarooPause extends MusicBeatState
 
 	var replaySelect:Bool = false;
 
+	#if mobile
 	var _pad:FlxVirtualPad;
+	#end
 
 	public function new():Void
 	{
@@ -50,9 +52,11 @@ class GitarooPause extends MusicBeatState
 
 		changeThing();
 
+		#if mobile
 		_pad = new FlxVirtualPad(LEFT_RIGHT, A);
     	_pad.alpha = 0.75;
     	this.add(_pad);
+		#end
 
 		super.create();
 	}

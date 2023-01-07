@@ -57,9 +57,11 @@ class SetFpsSubState extends MusicBeatSubstate
         _gamesave = new FlxSave();
     	_gamesave.bind("gamesetup");
         
-		_pad = new FlxVirtualPad(UP_DOWN, A_B);
+		#if mobile
+        _pad = new FlxVirtualPad(UP_DOWN, A_B);
     	_pad.alpha = 0.75;
     	this.add(_pad);
+        #end
 	}
 
 	override function update(elapsed:Float)
