@@ -12,9 +12,7 @@ class GitarooPause extends MusicBeatState
 
 	var replaySelect:Bool = false;
 
-	#if mobile
 	var _pad:FlxVirtualPad;
-	#end
 
 	public function new():Void
 	{

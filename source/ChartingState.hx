@@ -91,9 +91,7 @@ class ChartingState extends MusicBeatState
 	var key_space:FlxButton;
 	var key_shift:FlxButton;
 
-	#if mobile
 	var _pad:FlxVirtualPad;
-	#end
 
 	override function create()
 	{
