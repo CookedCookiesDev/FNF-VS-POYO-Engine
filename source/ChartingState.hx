@@ -33,9 +33,7 @@ import openfl.events.IOErrorEvent;
 import openfl.media.Sound;
 import openfl.net.FileReference;
 import openfl.utils.ByteArray;
-#if mobile
 import ui.FlxVirtualPad;
-#end
 
 using StringTools;
 
