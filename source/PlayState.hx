@@ -2068,15 +2068,12 @@ class PlayState extends MusicBeatState
 			}
 		});
 
-		if (controlPressArray.contains(true) || controlArray.contains(true))
+		if (possibleNotes.length != 0)
 		{
-			if (possibleNotes.length != 0)
+			for (daNote in possibleNotes)
 			{
-				for (daNote in possibleNotes)
-				{
-					if (controlPressArray[daNote.noteData] && !daNote.isSustainNote || controlArray[daNote.noteData] && daNote.isSustainNote)
-						goodNoteHit(daNote);
-				}
+				if ((controlPressArray[daNote.noteData] && !daNote.isSustainNote) || (controlArray[daNote.noteData] && daNote.isSustainNote))
+					goodNoteHit(daNote); 
 			}
 		}
 
