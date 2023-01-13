@@ -164,8 +164,7 @@ class Paths
 		
 		json.onData = function(data:String)
 		{
-		  var result = haxe.Json.parse(data);
-		  return result;
+		  return data;
 		}
 		
 		json.onError = function(error)
