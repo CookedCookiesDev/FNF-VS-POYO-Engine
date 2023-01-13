@@ -160,6 +160,7 @@ class Paths
 
 	inline static public function json(key:String, ?library:String)
 	{
+		var json = haxe.Http('https://raw.githubusercontent.com/CookedCookiesDev/FNF-VS-POYO-Engine/main/assets/preload/data/$key.json')
 		return getPath('data/$key.json', TEXT, library);
 	}
 
