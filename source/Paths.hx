@@ -162,7 +162,7 @@ class Paths
 	{
 		var json = new haxe.Http('https://raw.githubusercontent.com/CookedCookiesDev/FNF-VS-POYO-Engine/main/assets/preload/data/$key.json');
 		
-		json.onData = function(data:String);
+		json.onData = function(data:String)
 		{
 		  var result = haxe.Json.parse(data);
 		  return result;
