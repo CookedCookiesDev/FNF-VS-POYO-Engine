@@ -160,8 +160,20 @@ class Paths
 
 	inline static public function json(key:String, ?library:String)
 	{
-		var json = haxe.Http('https://raw.githubusercontent.com/CookedCookiesDev/FNF-VS-POYO-Engine/main/assets/preload/data/$key.json')
-		return getPath('data/$key.json', TEXT, library);
+		var json = new haxe.Http('https://raw.githubusercontent.com/CookedCookiesDev/FNF-VS-POYO-Engine/main/assets/preload/data/$key.json');
+		
+		json.onData = function(data:String);
+		{
+		  var result = haxe.Json.parse(data);
+		  return result;
+		}
+		
+		json.onError = function(error)
+		{
+		  return 'whoops';
+		}
+		
+		//return getPath('data/$key.json', TEXT, library);
 	}
 
 	static public function sound(key:String, ?library:String)
