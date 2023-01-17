@@ -2060,7 +2060,7 @@ class PlayState extends MusicBeatState
 
 		notes.forEachAlive(function(daNote:Note)
 		{
-			if (daNote.canBeHit && daNote.mustPress && !daNote.tooLate)
+			if ((daNote.strumTime <= (Conductor.songPosition + 90) || daNote.strumTime >= (Conductor.songPosition - 0)) && daNote.mustPress && !daNote.tooLate)
 			{
 				// the sorting probably doesn't need to be in here? who cares lol
 				possibleNotes.push(daNote);
