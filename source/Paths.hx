@@ -164,7 +164,7 @@ class Paths
 
 		json.onData = function(data:String)
 		{
-		  return data.trim;
+		  return data;
 		}
 
 		json.onError = function(error)
